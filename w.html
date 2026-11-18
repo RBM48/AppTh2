@@ -1,0 +1,2273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Tajawal', sans-serif; background: #f0f2f5; min-height: 100vh; padding: 15px; direction: rtl; }
+    .container { max-width: 1100px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); padding: 20px 25px; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 2px solid #f0f2f5; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-left h1 { font-size: 1.4rem; font-weight: 700; background: linear-gradient(135deg, #4f6ef7 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .header-left .badge { display: inline-block; background: linear-gradient(135deg, #4f6ef7 0%, #7c3aed 100%); color: white; padding: 2px 12px; border-radius: 20px; font-size: 0.6rem; font-weight: 500; }
+    .header-center .date-display { text-align: center; background: #f8faff; padding: 4px 16px; border-radius: 20px; border: 1px solid #e8eeff; }
+    .header-center .date-day { font-weight: 600; color: #ef4444; font-size: 0.85rem; margin-left: 8px; }
+    .header-center .date-hijri { font-size: 0.7rem; color: #ef4444; }
+    .header-right { display: flex; align-items: center; gap: 10px; background: #f8faff; padding: 4px 14px 4px 18px; border-radius: 30px; border: 1px solid #e8eeff; }
+    .header-right .label { font-size: 0.7rem; color: #6b7280; font-weight: 500; }
+    .header-right .name { font-size: 0.9rem; font-weight: 700; color: #4f6ef7; }
+    .header-right .code-badge { background: #4f6ef7; color: white; padding: 2px 10px; border-radius: 20px; font-size: 0.6rem; font-weight: 600; }
+    .login-section { background: #f8faff; border: 2px solid #e8eeff; border-radius: 12px; padding: 10px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 15px; flex-wrap: wrap; transition: all 0.3s ease; }
+    .login-section.hidden { display: none; }
+    .login-section label { font-weight: 600; color: #1f2937; font-size: 0.85rem; white-space: nowrap; }
+    .login-section input { flex: 1; padding: 6px 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.85rem; font-family: 'Courier New', monospace; min-width: 120px; background: white; direction: ltr; text-align: left; }
+    .login-section input:focus { outline: none; border-color: #4f6ef7; box-shadow: 0 0 0 3px rgba(79,110,247,0.1); }
+    .login-section .btn-login { padding: 6px 20px; border: none; border-radius: 8px; background: linear-gradient(135deg, #4f6ef7 0%, #7c3aed 100%); color: white; font-weight: 600; cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 0.85rem; transition: all 0.2s; white-space: nowrap; }
+    .login-section .btn-login:hover { transform: scale(1.02); box-shadow: 0 4px 15px rgba(79,110,247,0.3); }
+    .login-section .login-status { font-size: 0.75rem; color: #10b981; font-weight: 500; }
+    .login-section .login-status.error { color: #ef4444; }
+    .selects-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .select-group { display: flex; flex-direction: column; gap: 3px; }
+    .select-group label { font-size: 0.75rem; font-weight: 600; color: #374151; }
+    .select-group label .required { color: #ef4444; margin-right: 2px; }
+    .select-group select { padding: 7px 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.85rem; background: #fafbfc; font-family: 'Tajawal', sans-serif; width: 100%; }
+    .select-group select:focus { outline: none; border-color: #4f6ef7; box-shadow: 0 0 0 3px rgba(79,110,247,0.08); }
+    .select-group .small-hint { font-size: 0.6rem; color: #6b7280; margin-top: 1px; }
+    .topic-wrapper { display: flex; gap: 6px; align-items: center; }
+    .topic-wrapper select { flex: 1; }
+    .topic-wrapper .btn-icon { padding: 6px 10px; border: none; border-radius: 8px; background: linear-gradient(135deg, #4f6ef7 0%, #7c3aed 100%); color: white; cursor: pointer; font-size: 0.7rem; white-space: nowrap; font-family: 'Tajawal', sans-serif; transition: all 0.2s; height: 38px; display: flex; align-items: center; gap: 4px; }
+    .topic-wrapper .btn-icon:hover { transform: scale(1.03); box-shadow: 0 4px 15px rgba(79,110,247,0.3); }
+    .input-with-button { display: flex; gap: 6px; align-items: center; }
+    .input-with-button select { flex: 1; }
+    .input-with-button .btn-icon { padding: 6px 10px; border: none; border-radius: 8px; background: linear-gradient(135deg, #4f6ef7 0%, #7c3aed 100%); color: white; cursor: pointer; font-size: 0.7rem; white-space: nowrap; font-family: 'Tajawal', sans-serif; transition: all 0.2s; height: 38px; display: flex; align-items: center; gap: 4px; }
+    .input-with-button .btn-icon:hover { transform: scale(1.03); box-shadow: 0 4px 15px rgba(79,110,247,0.3); }
+    .topic-dates-display { font-size: 0.65rem; color: #6b7280; margin-top: 2px; }
+    .topic-dates-display .arrow { display: inline-block; margin: 0 4px; }
+    .topic-status { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.6rem; font-weight: 600; margin-left: 4px; }
+    .topic-status.active { background: #d1fae5; color: #065f46; }
+    .topic-status.inactive { background: #fee2e2; color: #991b1b; }
+    .topic-status.waiting { background: #fef3c7; color: #92400e; }
+    .topic-status.unknown { background: #f3f4f6; color: #6b7280; }
+    .admin-only { display: none; }
+    .admin-only.show { display: inline-flex; }
+    .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .ai-box { background: #f8faff; border-radius: 10px; padding: 10px 12px; border: 1px solid #e8eeff; position: relative; }
+    .ai-box .ai-label { font-size: 0.7rem; font-weight: 600; color: #4b5563; display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+    .ai-box .ai-label .badge-ai { background: linear-gradient(135deg, #4f6ef7 0%, #7c3aed 100%); color: white; padding: 0 8px; border-radius: 12px; font-size: 0.5rem; font-weight: 600; }
+    .ai-box textarea { width: 100%; padding: 4px 8px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 0.8rem; background: white; font-family: 'Tajawal', sans-serif; min-height: 28px; resize: vertical; direction: rtl; text-align: right; }
+    .ai-box textarea:focus { outline: none; border-color: #4f6ef7; box-shadow: 0 0 0 2px rgba(79,110,247,0.08); }
+    .sub-section { margin-bottom: 10px; }
+    .sub-section .section-title { font-size: 0.8rem; font-weight: 600; color: #1f2937; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+    .sub-section .section-title .badge-ai { background: linear-gradient(135deg, #4f6ef7 0%, #7c3aed 100%); color: white; padding: 0 8px; border-radius: 12px; font-size: 0.5rem; font-weight: 600; }
+    .sub-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
+    .sub-item { background: #f8faff; border-radius: 8px; padding: 6px 10px; border: 1px solid #e8eeff; }
+    .sub-item .sub-label { font-size: 0.6rem; font-weight: 500; color: #6b7280; }
+    .sub-item textarea { width: 100%; padding: 3px 6px; border: 1px solid #e5e7eb; border-radius: 4px; font-size: 0.75rem; background: white; font-family: 'Tajawal', sans-serif; min-height: 24px; resize: vertical; margin-top: 2px; direction: rtl; text-align: right; }
+    .sub-item textarea:focus { outline: none; border-color: #4f6ef7; }
+    .actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; padding-top: 14px; border-top: 2px solid #f0f2f5; flex-wrap: wrap; }
+    .btn { padding: 8px 24px; border: none; border-radius: 10px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; font-family: 'Tajawal', sans-serif; }
+    .btn-primary { background: linear-gradient(135deg, #4f6ef7 0%, #7c3aed 100%); color: white; box-shadow: 0 4px 15px rgba(79,110,247,0.2); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79,110,247,0.3); }
+    .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; box-shadow: 0 4px 15px rgba(16,185,129,0.2); }
+    .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16,185,129,0.3); }
+    .btn-secondary { background: #f3f4f6; color: #374151; }
+    .btn-secondary:hover { background: #e5e7eb; }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-sm { padding: 4px 10px; font-size: 0.65rem; border-radius: 6px; }
+    .btn-info { background: #8b5cf6; color: white; }
+    .btn-info:hover { background: #7c3aed; transform: translateY(-2px); }
+    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 12px 28px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; z-index: 9999; box-shadow: 0 8px 30px rgba(0,0,0,0.15); animation: slideDown 0.4s ease; display: none; min-width: 250px; max-width: 90%; text-align: center; font-family: 'Tajawal', sans-serif; white-space: pre-line; }
+    .toast.success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; display: block; }
+    .toast.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; display: block; }
+    .toast.loading { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; display: block; }
+    .toast.info { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; display: block; }
+    @keyframes slideDown { from { transform: translateX(-50%) translateY(-30px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; }
+    .modal.active { display: flex; }
+    .modal-content { background: white; padding: 20px 25px; border-radius: 16px; max-width: 480px; width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.15); animation: slideIn 0.25s ease; max-height: 90vh; overflow-y: auto; }
+    @keyframes slideIn { from { transform: translateY(-15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-content h2 { color: #1f2937; margin-bottom: 12px; text-align: center; font-size: 1.1rem; }
+    .modal-content .form-group { margin-bottom: 8px; }
+    .modal-content .form-group label { font-size: 0.75rem; font-weight: 600; color: #374151; display: block; margin-bottom: 2px; }
+    .modal-content .form-group input { width: 100%; padding: 6px 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.85rem; font-family: 'Tajawal', sans-serif; }
+    .modal-content .form-group input:focus { outline: none; border-color: #4f6ef7; }
+    .modal-content .btn { width: 100%; justify-content: center; margin-top: 4px; }
+    .date-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .loader { display: inline-block; width: 14px; height: 14px; border: 2px solid #f3f3f3; border-top: 2px solid #4f6ef7; border-radius: 50%; animation: spin 0.6s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .topics-list { max-height: 200px; overflow-y: auto; margin-bottom: 12px; border: 1px solid #eef2f6; border-radius: 8px; }
+    .topic-item { padding: 8px 12px; border-bottom: 1px solid #eef2f6; display: flex; justify-content: space-between; align-items: center; }
+    .topic-item:last-child { border-bottom: none; }
+    .topic-item .topic-info { flex: 1; }
+    .topic-item .topic-name { font-size: 0.85rem; font-weight: 500; }
+    .topic-item .topic-dates { font-size: 0.65rem; color: #6b7280; margin-top: 2px; }
+    .topic-actions { display: flex; gap: 6px; }
+    .topic-actions .btn-icon-sm { padding: 4px 8px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.65rem; transition: all 0.2s; }
+    .topic-actions .btn-delete { background: #fee2e2; color: #991b1b; }
+    .topic-actions .btn-delete:hover { background: #fecaca; }
+    .leaders-list { max-height: 200px; overflow-y: auto; margin-bottom: 12px; border: 1px solid #eef2f6; border-radius: 8px; }
+    .leader-item { padding: 8px 12px; border-bottom: 1px solid #eef2f6; display: flex; justify-content: space-between; align-items: center; }
+    .leader-item:last-child { border-bottom: none; }
+    .leader-item .leader-name { font-size: 0.85rem; font-weight: 500; }
+    .leader-item .leader-code { font-size: 0.7rem; color: #6b7280; margin-right: 8px; }
+    .leader-actions { display: flex; gap: 6px; }
+    .leader-actions .btn-icon-sm { padding: 4px 8px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.65rem; transition: all 0.2s; }
+    .leader-actions .btn-edit { background: #dbeafe; color: #1e40af; }
+    .leader-actions .btn-edit:hover { background: #bfdbfe; }
+    .leader-actions .btn-delete { background: #fee2e2; color: #991b1b; }
+    .leader-actions .btn-delete:hover { background: #fecaca; }
+    .leader-item.draggable { cursor: grab; user-select: none; padding: 8px 12px; border-bottom: 1px solid #eef2f6; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.2s; }
+    .leader-item.draggable:hover { background-color: #f8faff; }
+    .leader-item.draggable:active { cursor: grabbing; }
+    .leader-item.selected { background-color: #dbeafe; border: 2px solid #4f6ef7; }
+    .btn-add { background: #d1fae5; color: #065f46; padding: 2px 8px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.6rem; transition: all 0.2s; }
+    .btn-add:hover { background: #a7f3d0; transform: scale(1.05); }
+    .leaders-list { min-height: 200px; max-height: 300px; overflow-y: auto; border-radius: 8px; padding: 8px; transition: all 0.3s; }
+    .leaders-list.drag-over { border-color: #4f6ef7; background-color: #f0f4ff; }
+    .progress-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 10000; display: none; justify-content: center; align-items: center; flex-direction: column; }
+    .progress-overlay.active { display: flex; }
+    .progress-box { background: white; padding: 30px 40px; border-radius: 16px; min-width: 350px; max-width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .progress-box h3 { color: #1f2937; margin-bottom: 16px; font-size: 1.1rem; }
+    .progress-bar-container { width: 100%; height: 12px; background: #e5e7eb; border-radius: 20px; overflow: hidden; margin: 12px 0; }
+    .progress-bar { height: 100%; width: 0%; background: linear-gradient(135deg, #4f6ef7 0%, #7c3aed 100%); border-radius: 20px; transition: width 0.5s ease; }
+    .progress-text { font-size: 0.85rem; color: #6b7280; margin-top: 8px; }
+    .progress-status { font-size: 0.9rem; color: #1f2937; font-weight: 500; margin-top: 4px; }
+    .progress-icon { font-size: 2rem; margin-bottom: 10px; }
+    #leadersExecutionContainer { margin-top: 15px; }
+    @media (max-width: 768px) { .container { padding: 14px; } .header { flex-direction: column; align-items: stretch; gap: 8px; } .header-center .date-display { text-align: center; } .header-right { justify-content: center; } .selects-row { grid-template-columns: 1fr; gap: 8px; } .ai-grid { grid-template-columns: 1fr; } .sub-grid { grid-template-columns: 1fr 1fr; } .login-section { flex-direction: column; align-items: stretch; } .actions { flex-direction: column; align-items: stretch; } .btn { justify-content: center; } .topic-wrapper { flex-direction: column; } .topic-wrapper .btn-icon { width: 100%; justify-content: center; } .input-with-button { flex-direction: column; } .input-with-button .btn-icon { width: 100%; justify-content: center; } .toast { width: 90%; font-size: 0.8rem; } }
+    @media (max-width: 480px) { .sub-grid { grid-template-columns: 1fr; } }
+.topic-status.active { background: #d1fae5; color: #065f46; }
+.topic-status.inactive { background: #fee2e2; color: #991b1b; }
+.topic-status.waiting { background: #fef3c7; color: #92400e; }
+.topic-status.unknown { background: #f3f4f6; color: #6b7280; }
+#trackerBtn { display: none !important; }
+#trackerBtn.show { display: inline-flex !important; }
+#folderBtn { display: none !important; }
+#folderBtn.show { display: inline-flex !important; }
+#folderBtn { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; color: white !important; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3) !important; }
+#folderBtn:hover { transform: translateY(-2px) !important; box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4) !important; }
+#folderBtn i { margin-left: 6px; }
+.admin-only { display: none !important; }
+.admin-only.show { display: inline-flex !important; }
+.execution-dashboard { background: #ffffff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05); overflow: hidden; border: 1px solid #eef2f6; }
+.execution-dashboard .table-header { background: #e8f0fe !important; padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d0e0f5; }
+.execution-dashboard .table-header .title { color: #1a3a6b; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.execution-dashboard .table-header .title i { color: #4f6ef7; font-size: 0.9rem; }
+.execution-dashboard .table-header .badge-count { background: #d0e0f5; color: #1a3a6b; padding: 2px 12px; border-radius: 16px; font-size: 0.6rem; font-weight: 500; }
+.execution-dashboard table { width: 100%; border-collapse: collapse; font-size: 0.6rem !important; table-layout: fixed; }
+.execution-dashboard thead th { background: #e8f0fe !important; color: #1a3a6b; padding: 6px 3px; text-align: center; font-weight: 600; font-size: 0.55rem !important; letter-spacing: 0.2px; border-bottom: 2px solid #d0e0f5; white-space: nowrap; position: sticky; top: 0; z-index: 5; }
+.execution-dashboard thead th:first-child { width: 28px; }
+.execution-dashboard thead th:nth-child(2) { text-align: center; min-width: 80px; max-width: 120px; }
+.execution-dashboard thead th:last-child { width: 50px; }
+.execution-dashboard tbody tr { transition: all 0.15s ease; border-bottom: 1px solid #f1f5f9; }
+.execution-dashboard tbody tr:hover { background: #f8faff !important; }
+.execution-dashboard tbody tr:nth-child(even) { background: #fafbfc; }
+.execution-dashboard tbody td { padding: 4px 2px; text-align: center; font-size: 0.55rem !important; color: #1e293b; vertical-align: middle; }
+.execution-dashboard tbody td:first-child { font-weight: 600; color: #94a3b8; font-size: 0.5rem; }
+.execution-dashboard tbody td:nth-child(2) { font-weight: 600; color: #0f172a; font-size: 0.6rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.status-btn { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; font-size: 0.6rem; cursor: pointer; transition: all 0.2s ease; border: 1.5px solid transparent; background: #ffffff !important; color: #94a3b8; }
+.status-btn:hover { transform: scale(1.1); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
+.status-btn.executed { background: #d1fae5 !important; border-color: #10b981; color: #065f46; }
+.status-btn.executed:hover { background: #a7f3d0 !important; border-color: #059669; }
+.status-btn.not-executed { background: #ffffff !important; border-color: #e2e8f0; color: #94a3b8; }
+.status-btn.not-executed:hover { background: #f8fafc !important; border-color: #cbd5e1; }
+.char-counter { display: flex; justify-content: space-between; align-items: center; font-size: 0.55rem; color: #6b7280; margin-top: 2px; direction: ltr; }
+.char-counter .count { font-weight: 600; padding: 1px 8px; border-radius: 10px; background: #f1f5f9; min-width: 20px; text-align: center; }
+.char-counter .count.valid { color: #10b981; background: #d1fae5; }
+.char-counter .count.warning { color: #f59e0b; background: #fef3c7; }
+.char-counter .count.danger { color: #ef4444; background: #fee2e2; }
+.char-counter .max { color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <h1>🏛️ المجتمع المهني</h1>
+        <span class="badge">✨ AI</span>
+      </div>
+      <div class="header-center">
+        <div class="date-display">
+          <span class="date-day" id="todayDay">⚠️ مرحبا بك</span>
+          <span class="date-hijri" id="todayHijri">⚠️ سجل دخولك لتحميل البيانات</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="label">👔 رئيس القسم:</span>
+        <span class="name" id="headerDepartmentHead">-</span>
+        <span class="code-badge" id="headerCode">🔑</span>
+      </div>
+    </div>
+
+    <!-- Login -->
+    <div class="login-section" id="loginSection">
+      <label><i class="fas fa-key"></i> كود الدخول:</label>
+      <input type="text" id="accessCode" placeholder="Enter code" onkeypress="if(event.key==='Enter') loginWithCode()" oninput="validateEnglishOnly(this)">
+      <button class="btn-login" onclick="loginWithCode()"><i class="fas fa-sign-in-alt"></i> دخول</button>
+      <span class="login-status" id="loginStatus">✖ غير متصل</span>
+    </div>
+
+    <!-- Update Section -->
+    <div class="update-section admin-only" id="updateSection" style="display: none; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 15px; padding: 8px 16px; background: #f8faff; border-radius: 12px; border: 1px solid #e8eeff; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <button onclick="refreshAttendeesData()" class="btn-refresh" style="padding: 6px 16px; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 0.8rem; transition: all 0.2s;">
+          <i class="fas fa-sync"></i> تحديث الآن
+        </button>
+        <span id="attendeesStatus" style="font-size: 0.75rem; color: #6b7280;">
+          <i class="fas fa-clock"></i> التحديث التلقائي غير مفعل
+        </span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <button onclick="enableAutoUpdate()" class="btn-auto" style="padding: 4px 12px; background: #4f6ef7; color: white; border: none; border-radius: 6px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 0.7rem; transition: all 0.2s;">
+          <i class="fas fa-play"></i> تفعيل التلقائي
+        </button>
+        <button onclick="disableAutoUpdate()" class="btn-auto" style="padding: 4px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 0.7rem; transition: all 0.2s;">
+          <i class="fas fa-stop"></i> إيقاف التلقائي
+        </button>
+        <span style="font-size: 0.65rem; color: #6b7280;"><i class="fas fa-database"></i> جدول المعلمين</span>
+      </div>
+    </div>
+
+    <!-- Selects -->
+    <div class="selects-row">
+      <div class="select-group">
+        <label>التخصص <span class="required">*</span></label>
+        <div class="input-with-button">
+          <select id="specialty"><option value="">اختر التخصص...</option></select>
+          <button class="btn-icon admin-only" id="addLeaderBtn" onclick="openLeaderModal()"><i class="fas fa-user-plus"></i> رئيس</button>
+        </div>
+        <div class="small-hint">اختر التخصص ثم رئيسه <span style="color:#ef4444;">(مطلوب للتوليد التلقائي)</span></div>
+      </div>
+      <div class="select-group">
+        <label>مقر الاجتماع <span class="required">*</span></label>
+        <select id="meetingLocation"><option value="">اختر المقر...</option></select>
+      </div>
+    </div>
+
+    <div class="selects-row">
+      <div class="select-group">
+        <label>موضوع الاجتماع <span class="required">*</span></label>
+        <div class="topic-wrapper">
+          <select id="meetingTopic"><option value="">اختر الموضوع...</option></select>
+          <button class="btn-icon admin-only" id="addTopicBtn" onclick="openTopicModal()"><i class="fas fa-plus"></i> إضافة</button>
+        </div>
+        <div class="topic-dates-display" id="topicHint"></div>
+      </div>
+      <div class="select-group">
+        <label>الحاضرون <span class="required">*</span></label>
+        <select id="attendees" multiple style="height: 60px;"><option value="">اختر الحاضرين...</option></select>
+        <div class="small-hint">اضغط Ctrl لاختيار متعدد</div>
+      </div>
+    </div>
+
+    <!-- AI Fields -->
+    <div class="ai-grid">
+      <div class="ai-box">
+        <div class="ai-label"><span>🎯 الفئة المستهدفة</span><span class="badge-ai">AI</span></div>
+        <textarea id="targetAudience" placeholder="توليد تلقائي" oninput="updateCharCounter('targetAudience', 'counterTargetAudience', 130)"></textarea>
+        <div class="char-counter"><span class="count" id="counterTargetAudience">0</span><span class="max">/ 130 حرف</span></div>
+      </div>
+      <div class="ai-box">
+        <div class="ai-label"><span>💡 الهدف</span><span class="badge-ai">AI</span></div>
+        <textarea id="objective" placeholder="توليد تلقائي" oninput="updateCharCounter('objective', 'counterObjective', 130)"></textarea>
+        <div class="char-counter"><span class="count" id="counterObjective">0</span><span class="max">/ 130 حرف</span></div>
+      </div>
+    </div>
+
+    <!-- Work Plan -->
+    <div class="sub-section">
+      <div class="section-title"><span>📌 خطة العمل</span><span class="badge-ai">AI</span></div>
+      <div class="sub-grid">
+        <div class="sub-item"><div class="sub-label">الخطة 1 (185 حرف)</div><textarea id="workPlan1" placeholder="توليد تلقائي" oninput="updateCharCounter('workPlan1', 'counterWorkPlan1', 185)"></textarea><div class="char-counter"><span class="count" id="counterWorkPlan1">0</span><span class="max">/ 185</span></div></div>
+        <div class="sub-item"><div class="sub-label">الخطة 2 (185 حرف)</div><textarea id="workPlan2" placeholder="توليد تلقائي" oninput="updateCharCounter('workPlan2', 'counterWorkPlan2', 185)"></textarea><div class="char-counter"><span class="count" id="counterWorkPlan2">0</span><span class="max">/ 185</span></div></div>
+        <div class="sub-item"><div class="sub-label">الخطة 3 (185 حرف)</div><textarea id="workPlan3" placeholder="توليد تلقائي" oninput="updateCharCounter('workPlan3', 'counterWorkPlan3', 185)"></textarea><div class="char-counter"><span class="count" id="counterWorkPlan3">0</span><span class="max">/ 185</span></div></div>
+        <div class="sub-item"><div class="sub-label">الخطة 4 (185 حرف)</div><textarea id="workPlan4" placeholder="توليد تلقائي" oninput="updateCharCounter('workPlan4', 'counterWorkPlan4', 185)"></textarea><div class="char-counter"><span class="count" id="counterWorkPlan4">0</span><span class="max">/ 185</span></div></div>
+      </div>
+    </div>
+
+    <!-- Outputs -->
+    <div class="sub-section">
+      <div class="section-title"><span>🎯 المخرجات</span><span class="badge-ai">AI</span></div>
+      <div class="sub-grid">
+        <div class="sub-item"><div class="sub-label">المخرجات 1 (130 حرف)</div><textarea id="output1" placeholder="توليد تلقائي" oninput="updateCharCounter('output1', 'counterOutput1', 130)"></textarea><div class="char-counter"><span class="count" id="counterOutput1">0</span><span class="max">/ 130</span></div></div>
+        <div class="sub-item"><div class="sub-label">المخرجات 2 (130 حرف)</div><textarea id="output2" placeholder="توليد تلقائي" oninput="updateCharCounter('output2', 'counterOutput2', 130)"></textarea><div class="char-counter"><span class="count" id="counterOutput2">0</span><span class="max">/ 130</span></div></div>
+        <div class="sub-item"><div class="sub-label">المخرجات 3 (130 حرف)</div><textarea id="output3" placeholder="توليد تلقائي" oninput="updateCharCounter('output3', 'counterOutput3', 130)"></textarea><div class="char-counter"><span class="count" id="counterOutput3">0</span><span class="max">/ 130</span></div></div>
+        <div class="sub-item"><div class="sub-label">المخرجات 4 (130 حرف)</div><textarea id="output4" placeholder="توليد تلقائي" oninput="updateCharCounter('output4', 'counterOutput4', 130)"></textarea><div class="char-counter"><span class="count" id="counterOutput4">0</span><span class="max">/ 130</span></div></div>
+      </div>
+    </div>
+
+    <!-- Duration -->
+    <div class="sub-section">
+      <div class="section-title"><span>⏱️ مدة التنفيذ</span><span class="badge-ai">AI</span></div>
+      <div class="sub-grid">
+        <div class="sub-item"><div class="sub-label">المدة 1 (60 حرف)</div><textarea id="duration1" placeholder="توليد تلقائي" oninput="updateCharCounter('duration1', 'counterDuration1', 60)"></textarea><div class="char-counter"><span class="count" id="counterDuration1">0</span><span class="max">/ 60</span></div></div>
+        <div class="sub-item"><div class="sub-label">المدة 2 (60 حرف)</div><textarea id="duration2" placeholder="توليد تلقائي" oninput="updateCharCounter('duration2', 'counterDuration2', 60)"></textarea><div class="char-counter"><span class="count" id="counterDuration2">0</span><span class="max">/ 60</span></div></div>
+        <div class="sub-item"><div class="sub-label">المدة 3 (60 حرف)</div><textarea id="duration3" placeholder="توليد تلقائي" oninput="updateCharCounter('duration3', 'counterDuration3', 60)"></textarea><div class="char-counter"><span class="count" id="counterDuration3">0</span><span class="max">/ 60</span></div></div>
+        <div class="sub-item"><div class="sub-label">المدة 4 (60 حرف)</div><textarea id="duration4" placeholder="توليد تلقائي" oninput="updateCharCounter('duration4', 'counterDuration4', 60)"></textarea><div class="char-counter"><span class="count" id="counterDuration4">0</span><span class="max">/ 60</span></div></div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="resetForm()"><i class="fas fa-undo"></i> إعادة تعيين</button>
+      <button class="btn btn-success" onclick="saveAndExportPDF()"><i class="fas fa-file-pdf"></i> حفظ وتصدير PDF</button>
+      <button class="btn btn-info admin-only" id="trackerBtn" onclick="openTrackerModal()"><i class="fas fa-clipboard-list"></i> متابعة التنفيذ</button>
+      <button class="btn btn-primary admin-only" id="folderBtn" onclick="openReportsFolder()"><i class="fas fa-folder-open"></i> 📂 فتح المجلد</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Progress -->
+  <div class="progress-overlay" id="progressOverlay">
+    <div class="progress-box">
+      <div class="progress-icon" id="progressIcon">⏳</div>
+      <h3 id="progressTitle">جاري حفظ البيانات...</h3>
+      <div class="progress-bar-container"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-text" id="progressText">0%</div>
+      <div class="progress-status" id="progressStatus">جاري التحميل...</div>
+    </div>
+  </div>
+
+  <!-- Topic Modal -->
+  <div id="topicModal" class="modal">
+    <div class="modal-content">
+      <h2><i class="fas fa-tasks" style="color: #4f6ef7;"></i> إدارة الموضوعات</h2>
+      <div class="topics-list" id="topicsList"></div>
+      <hr style="margin: 12px 0; border: 1px solid #eef2f6;">
+      <h3 style="font-size: 0.9rem; color: #374151; margin-bottom: 10px; text-align: center;">إضافة موضوع جديد</h3>
+      <div class="form-group"><label>اسم الموضوع</label><input type="text" id="newTopicName" placeholder="أدخل الموضوع"></div>
+      <div class="date-grid"><div class="form-group"><label>تاريخ البدء</label><input type="date" id="topicStartDate"></div><div class="form-group"><label>تاريخ الانتهاء</label><input type="date" id="topicEndDate"></div></div>
+      <button class="btn btn-primary" onclick="addNewTopic()"><i class="fas fa-save"></i> إضافة الموضوع</button>
+      <button class="btn btn-secondary" onclick="closeTopicModal()" style="margin-top: 6px;"><i class="fas fa-times"></i> إغلاق</button>
+    </div>
+  </div>
+
+  <!-- Leader Modal -->
+  <div id="leaderModal" class="modal">
+    <div class="modal-content" style="max-width: 700px;">
+      <h2><i class="fas fa-users" style="color: #4f6ef7;"></i> إدارة رؤساء التخصصات</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h3 style="font-size: 0.9rem; color: #374151;">👥 الحاضرون</h3>
+            <span style="font-size: 0.7rem; color: #6b7280;" id="attendeesCount">0</span>
+          </div>
+          <div class="leaders-list" id="availableAttendeesList" style="min-height: 200px; border: 2px dashed #e5e7eb; padding: 8px;"></div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h3 style="font-size: 0.9rem; color: #374151;">👔 رؤساء الأقسام</h3>
+            <span style="font-size: 0.7rem; color: #6b7280;" id="leadersCount">0</span>
+          </div>
+          <div class="leaders-list" id="leadersList" style="min-height: 200px; border: 2px solid #e5e7eb; padding: 8px;"></div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; justify-content: center;">
+        <button class="btn btn-primary" onclick="addSelectedAttendees()" style="padding: 6px 16px; font-size: 0.8rem;"><i class="fas fa-arrow-left"></i> إضافة المختارين للرؤساء</button>
+        <button class="btn btn-secondary" onclick="removeSelectedLeaders()" style="padding: 6px 16px; font-size: 0.8rem;"><i class="fas fa-arrow-right"></i> إزالة المختارين من الرؤساء</button>
+      </div>
+      <hr style="margin: 12px 0; border: 1px solid #eef2f6;">
+      <h3 style="font-size: 0.9rem; color: #374151; margin-bottom: 10px; text-align: center;">إضافة رئيس جديد يدوياً</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="form-group"><label>اسم رئيس التخصص</label><input type="text" id="newLeaderName" placeholder="أدخل الاسم"></div>
+        <div class="form-group"><label>الكود</label><input type="text" id="newLeaderCode" placeholder="أدخل الكود" oninput="validateEnglishOnly(this)"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addLeader()"><i class="fas fa-save"></i> إضافة رئيس التخصص</button>
+      <button class="btn btn-secondary" onclick="closeLeaderModal()" style="margin-top: 6px;"><i class="fas fa-times"></i> إغلاق</button>
+    </div>
+  </div>
+
+  <!-- Tracker Modal -->
+  <div id="trackerModal" class="modal">
+    <div class="modal-content" style="max-width: 1100px; max-height: 90vh; overflow-y: auto;">
+      <h2><i class="fas fa-clipboard-list" style="color: #4f6ef7;"></i> متابعة تنفيذ رؤساء الأقسام</h2>
+      
+      <div style="display: flex; gap: 8px; margin: 15px 0; flex-wrap: wrap; justify-content: center;">
+        <button onclick="resetTrackerSheet()" style="background: #ef4444; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-family: 'Tajawal', sans-serif; display: inline-flex; align-items: center; gap: 4px;">
+          <i class="fas fa-trash"></i> إعادة إنشاء
+        </button>
+        <button onclick="syncTrackerData()" style="background: #8b5cf6; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-family: 'Tajawal', sans-serif; display: inline-flex; align-items: center; gap: 4px;">
+          <i class="fas fa-sync"></i> مزامنة
+        </button>
+        <button onclick="loadLeadersExecution()" style="background: #10b981; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-family: 'Tajawal', sans-serif; display: inline-flex; align-items: center; gap: 4px;">
+          <i class="fas fa-refresh"></i> تحديث
+        </button>
+        <button onclick="printTrackerTable()" style="background: #4f6ef7; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-family: 'Tajawal', sans-serif; display: inline-flex; align-items: center; gap: 4px;">
+          <i class="fas fa-print"></i> طباعة
+        </button>
+        <button onclick="openAccountabilityModal()" style="background: #dc2626; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-family: 'Tajawal', sans-serif; display: inline-flex; align-items: center; gap: 4px;">
+          <i class="fas fa-file-signature"></i> المساءلة الجماعية
+        </button>
+        <button onclick="closeTrackerModal()" style="background: #f3f4f6; color: #374151; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-family: 'Tajawal', sans-serif; display: inline-flex; align-items: center; gap: 4px;">
+          <i class="fas fa-times"></i> إغلاق
+        </button>
+      </div>
+      
+      <div id="leadersExecutionContainer">
+        <div style="text-align: center; padding: 30px; color: #6b7280;">
+          <i class="fas fa-spinner fa-spin" style="font-size: 2rem;"></i>
+          <p style="margin-top: 10px;">جاري تحميل البيانات...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accountability Modal -->
+  <div id="accountabilityModal" class="modal">
+    <div class="modal-content" style="max-width: 750px; max-height: 90vh; overflow-y: auto;">
+      <h2><i class="fas fa-file-signature" style="color: #dc2626;"></i> المساءلة الرسمية</h2>
+      
+      <div class="form-group" style="margin-bottom: 15px;">
+        <label style="font-size: 0.85rem; font-weight: 600; color: #374151; display: block; margin-bottom: 6px;">
+          <i class="fas fa-book"></i> اختر الموضوع
+        </label>
+        <select id="accountabilityTopic" onchange="loadLeadersForTopic()" style="width: 100%; padding: 10px 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.85rem; font-family: 'Tajawal', sans-serif;">
+          <option value="">اختر الموضوع...</option>
+        </select>
+      </div>
+      
+      <div id="leadersSelectionArea" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <label style="font-size: 0.85rem; font-weight: 600; color: #374151;">
+            <i class="fas fa-users"></i> الرؤساء الذين لم ينفذوا الموضوع
+          </label>
+          <div style="display: flex; gap: 6px;">
+            <button onclick="selectAllLeaders()" style="background: #dbeafe; color: #1e40af; border: none; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 0.65rem; font-family: 'Tajawal', sans-serif;">
+              <i class="fas fa-check-double"></i> تحديد الكل
+            </button>
+            <button onclick="deselectAllLeaders()" style="background: #f1f5f9; color: #475569; border: none; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 0.65rem; font-family: 'Tajawal', sans-serif;">
+              <i class="fas fa-times"></i> إلغاء الكل
+            </button>
+          </div>
+        </div>
+        
+        <div id="leadersCheckboxList" style="max-height: 300px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; background: #fafbfc;"></div>
+        
+        <div style="margin-top: 10px; font-size: 0.75rem; color: #6b7280; text-align: center;">
+          <span id="selectedCount">0</span> رئيس محدد
+        </div>
+      </div>
+      
+      <div style="margin-top: 15px;">
+        <button class="btn btn-danger" onclick="printSelectedAccountabilities()" id="printAccountabilityBtn" style="width: 100%; justify-content: center; background: #dc2626; display: none;">
+          <i class="fas fa-print"></i> طباعة المساءلة للمحددين
+        </button>
+        <button class="btn btn-secondary" onclick="closeAccountabilityModal()" style="width: 100%; justify-content: center; margin-top: 6px;">
+          <i class="fas fa-times"></i> إغلاق
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ====== متغيرات ======
+    var attendeesList = [];
+    var locationsList = [];
+    var topicsList = [];
+    var topicStatus = {};
+    var specialtiesList = [];
+    var leadersList = [];
+    var leaderCodes = {};
+    var attendeeCodes = {};
+    var isLoggedIn = false;
+    var isAdmin = false;
+    var currentDepartmentHead = '';
+    var dateInfo = {};
+    var toastTimeout = null;
+    var accountabilityData = null;
+    var selectedTopicForAccountability = '';
+
+    // ====== Toast ======
+    function showToast(message, type) {
+      var toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.className = 'toast ' + type;
+      toast.style.display = 'block';
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(function() {
+        toast.className = 'toast';
+        toast.style.display = 'none';
+      }, 5000);
+    }
+
+    // ====== Progress ======
+    function showProgress(title, status, percent) {
+      var overlay = document.getElementById('progressOverlay');
+      if (!overlay) return;
+      var bar = document.getElementById('progressBar');
+      var text = document.getElementById('progressText');
+      var statusEl = document.getElementById('progressStatus');
+      var titleEl = document.getElementById('progressTitle');
+      overlay.classList.add('active');
+      if (titleEl) titleEl.textContent = title || 'جاري المعالجة...';
+      if (statusEl) statusEl.textContent = status || 'جاري التحميل...';
+      if (bar) bar.style.width = percent + '%';
+      if (text) text.textContent = percent + '%';
+    }
+
+    function hideProgress() {
+      var overlay = document.getElementById('progressOverlay');
+      if (overlay) overlay.classList.remove('active');
+    }
+
+    function updateProgress(percent, status) {
+      var bar = document.getElementById('progressBar');
+      var text = document.getElementById('progressText');
+      var statusEl = document.getElementById('progressStatus');
+      if (bar) bar.style.width = percent + '%';
+      if (text) text.textContent = percent + '%';
+      if (status && statusEl) statusEl.textContent = status;
+    }
+
+    // ====== Validation ======
+    function validateRequiredFields() {
+      var requiredFields = [{ id: 'meetingTopic', name: 'موضوع الاجتماع' }, { id: 'meetingLocation', name: 'مقر الاجتماع' }, { id: 'specialty', name: 'التخصص' }];
+      var emptyFields = [];
+      for (var i = 0; i < requiredFields.length; i++) {
+        var field = document.getElementById(requiredFields[i].id);
+        if (!field || !field.value) emptyFields.push(requiredFields[i].name);
+      }
+      var attendeesSelect = document.getElementById('attendees');
+      if (attendeesSelect) {
+        var selectedOptions = Array.from(attendeesSelect.selectedOptions);
+        if (selectedOptions.length === 0) emptyFields.push('الحاضرون');
+      }
+      if (emptyFields.length > 0) {
+        var msg = '⚠️ يرجى تعبئة الحقول التالية:';
+        for (var j = 0; j < emptyFields.length; j++) msg += '\n• ' + emptyFields[j];
+        showToast(msg, 'error');
+        return false;
+      }
+      return true;
+    }
+
+    function validateTopic() {
+      var selectedTopic = document.getElementById('meetingTopic').value;
+      if (!selectedTopic) { showToast('⚠️ يرجى اختيار موضوع الاجتماع', 'error'); return false; }
+      var status = topicStatus[selectedTopic];
+      if (!status) { showToast('⚠️ حالة الموضوع غير معروفة', 'error'); return false; }
+      if (status.active !== true) {
+        var msg = '⚠️ الموضوع غير مفعل حالياً';
+        if (status.statusText) msg += ': ' + status.statusText;
+        showToast(msg, 'error');
+        return false;
+      }
+      return true;
+    }
+
+    function validateEnglishOnly(input) {
+      var value = input.value;
+      var arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+      var englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+      for (var i = 0; i < arabicNumbers.length; i++) {
+        value = value.replace(new RegExp(arabicNumbers[i], 'g'), englishNumbers[i]);
+      }
+      value = value.replace(/[^a-zA-Z0-9]/g, '');
+      input.value = value;
+    }
+
+    // ====== Login ======
+    function loginWithCode() {
+      var code = document.getElementById('accessCode').value.trim();
+      if (!code) { showToast('يرجى إدخال كود الدخول', 'error'); return; }
+      showToast('⏳ جاري التحقق من الكود...', 'loading');
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            isLoggedIn = true;
+            isAdmin = result.isAdmin || false;
+            currentDepartmentHead = result.name || 'معلم';
+            
+            document.getElementById('headerDepartmentHead').textContent = currentDepartmentHead;
+            document.getElementById('headerCode').textContent = '✅';
+            document.getElementById('loginStatus').textContent = '✅ متصل';
+            document.getElementById('loginStatus').className = 'login-status';
+            document.getElementById('loginSection').classList.add('hidden');
+            
+            var addTopicBtn = document.getElementById('addTopicBtn');
+            var addLeaderBtn = document.getElementById('addLeaderBtn');
+            var updateSection = document.getElementById('updateSection');
+            var trackerBtn = document.getElementById('trackerBtn');
+            var folderBtn = document.getElementById('folderBtn');
+            
+            if (isAdmin) {
+              if (addTopicBtn) addTopicBtn.classList.add('show');
+              if (addLeaderBtn) addLeaderBtn.classList.add('show');
+              if (updateSection) updateSection.style.display = 'flex';
+              if (trackerBtn) trackerBtn.classList.add('show');
+              if (folderBtn) folderBtn.classList.add('show');
+              showToast('✅ مرحباً مدير النظام!', 'success');
+              checkAttendeesStatus();
+            } else {
+              if (addTopicBtn) addTopicBtn.classList.remove('show');
+              if (addLeaderBtn) addLeaderBtn.classList.remove('show');
+              if (updateSection) updateSection.style.display = 'none';
+              if (trackerBtn) trackerBtn.classList.remove('show');
+              if (folderBtn) folderBtn.classList.remove('show');
+              showToast('✅ تم الدخول بنجاح! مرحباً ' + currentDepartmentHead, 'success');
+            }
+            loadData();
+          } else {
+            showToast('❌ ' + result.message, 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ خطأ: ' + error.message, 'error');
+        })
+        .verifyCode(code);
+    }
+
+    // ====== Load Data ======
+    function loadData() {
+      if (!isLoggedIn) return;
+      showToast('⏳ جاري تحميل البيانات...', 'loading');
+
+      google.script.run
+        .withSuccessHandler(function(data) {
+          if (!data) { showToast('❌ خطأ: البيانات فارغة', 'error'); return; }
+          try {
+            attendeesList = Array.isArray(data.attendees) ? data.attendees : [];
+            attendeeCodes = data.attendeeCodes || {};
+            locationsList = Array.isArray(data.locations) ? data.locations : [];
+            topicsList = Array.isArray(data.topics) ? data.topics : [];
+            topicStatus = data.topicStatus || {};
+            specialtiesList = Array.isArray(data.specialties) ? data.specialties : [];
+            leadersList = Array.isArray(data.leaders) ? data.leaders : [];
+            leaderCodes = data.leaderCodes || {};
+            dateInfo = data.dateInfo || { success: false, hijri: '⚠️ خطأ', day: '⚠️ خطأ' };
+
+            updateDateDisplay();
+            populateSelects();
+            setupAutoGenerate();
+            showToast('✅ تم تحميل البيانات بنجاح!', 'success');
+            setTimeout(function() { updateAllCounters(); }, 500);
+          } catch (error) {
+            console.error('❌ خطأ في معالجة البيانات:', error);
+            showToast('❌ خطأ في معالجة البيانات', 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          console.error('❌ خطأ في الاتصال بالخادم:', error);
+          showToast('❌ خطأ في تحميل البيانات', 'error');
+        })
+        .getData();
+    }
+
+    function updateDateDisplay() {
+      try {
+        var dayEl = document.getElementById('todayDay');
+        var hijriEl = document.getElementById('todayHijri');
+        if (!dayEl || !hijriEl) return;
+        if (dateInfo && dateInfo.success) {
+          dayEl.textContent = dateInfo.day || '⚠️ التاريخ غير موجود';
+          hijriEl.textContent = dateInfo.hijri || '⚠️ التاريخ غير موجود';
+        } else {
+          dayEl.textContent = '⚠️ التاريخ غير موجود';
+          hijriEl.textContent = '⚠️ التاريخ غير موجود';
+        }
+      } catch (error) {}
+    }
+
+    function populateSelects() {
+      try {
+        var locSelect = document.getElementById('meetingLocation');
+        if (locSelect) {
+          locSelect.innerHTML = '<option value="">اختر المقر...</option>';
+          if (Array.isArray(locationsList) && locationsList.length > 0) {
+            locationsList.forEach(function(loc) {
+              if (loc) { var opt = document.createElement('option'); opt.value = loc; opt.textContent = loc; locSelect.appendChild(opt); }
+            });
+          }
+        }
+        var specSelect = document.getElementById('specialty');
+        if (specSelect) {
+          specSelect.innerHTML = '<option value="">اختر التخصص...</option>';
+          if (Array.isArray(specialtiesList) && specialtiesList.length > 0) {
+            specialtiesList.forEach(function(spec) {
+              if (spec) { var opt = document.createElement('option'); opt.value = spec; opt.textContent = spec; specSelect.appendChild(opt); }
+            });
+          }
+        }
+        var attSelect = document.getElementById('attendees');
+        if (attSelect) {
+          attSelect.innerHTML = '';
+          if (Array.isArray(attendeesList) && attendeesList.length > 0) {
+            attendeesList.forEach(function(name) {
+              if (name) { var opt = document.createElement('option'); opt.value = name; opt.textContent = name; attSelect.appendChild(opt); }
+            });
+          } else {
+            var opt = document.createElement('option'); opt.value = ''; opt.textContent = 'لا يوجد حاضرون'; attSelect.appendChild(opt);
+          }
+        }
+        var topicSelect = document.getElementById('meetingTopic');
+        if (topicSelect) {
+          topicSelect.innerHTML = '<option value="">اختر الموضوع...</option>';
+          if (Array.isArray(topicsList) && topicsList.length > 0) {
+            topicsList.forEach(function(topic) {
+              if (topic) {
+                var opt = document.createElement('option');
+                opt.value = topic;
+                var status = topicStatus[topic] || {};
+                var cleanTopic = topic.replace(/^\[\d+\]\s*/, '');
+                var displayText = cleanTopic;
+                if (status.active === true) displayText = cleanTopic + ' ✅ مفعل';
+                else if (status.statusText && status.statusText.includes('باقي')) displayText = cleanTopic + ' ' + status.statusText;
+                else if (status.statusText && status.statusText.includes('منتهي')) displayText = cleanTopic + ' ❌ منتهي';
+                else if (status.statusText) displayText = cleanTopic + ' ' + status.statusText;
+                opt.textContent = displayText;
+                topicSelect.appendChild(opt);
+              }
+            });
+          }
+        }
+        if (currentDepartmentHead) {
+          document.getElementById('headerDepartmentHead').textContent = currentDepartmentHead;
+        }
+      } catch (error) {}
+    }
+
+    // ====== Auto Generate ======
+    function setupAutoGenerate() {
+      var topicSelect = document.getElementById('meetingTopic');
+      var specialtySelect = document.getElementById('specialty');
+      if (!topicSelect) return;
+      
+      function checkAndGenerate() {
+        var selectedTopic = topicSelect.value;
+        var selectedSpecialty = specialtySelect ? specialtySelect.value : '';
+        var hint = document.getElementById('topicHint');
+        
+        if (!selectedSpecialty || selectedSpecialty === '' || selectedSpecialty === 'اختر التخصص...') {
+          if (hint) hint.innerHTML = '<span style="color:#ef4444;">⚠️ يرجى اختيار التخصص أولاً</span>';
+          showToast('⚠️ يرجى اختيار التخصص أولاً', 'info');
+          return;
+        }
+        if (!selectedTopic || selectedTopic === '' || selectedTopic === 'اختر الموضوع...') {
+          if (hint) hint.innerHTML = '<span style="color:#f59e0b;">⚠️ يرجى اختيار الموضوع</span>';
+          return;
+        }
+        if (topicStatus && topicStatus[selectedTopic]) {
+          var status = topicStatus[selectedTopic];
+          if (status.active === true) {
+            generateWithAI(selectedTopic, selectedSpecialty);
+            if (hint) hint.innerHTML = '<span style="color:#10b981;">✅ يتم التوليد حسب التخصص: ' + selectedSpecialty + '</span>';
+          } else {
+            var msg = '⚠️ الموضوع غير مفعل حالياً';
+            if (status.statusText) msg += ': ' + status.statusText;
+            showToast(msg, 'error');
+            if (hint) hint.innerHTML = '<span style="color:#ef4444;">' + msg + '</span>';
+          }
+        }
+      }
+      
+      topicSelect.addEventListener('change', function() { checkAndGenerate(); });
+      if (specialtySelect) {
+        specialtySelect.addEventListener('change', function() {
+          var selectedTopic = topicSelect.value;
+          if (selectedTopic && topicStatus[selectedTopic] && topicStatus[selectedTopic].active === true) {
+            checkAndGenerate();
+            showToast('🔄 جاري التوليد حسب التخصص الجديد: ' + specialtySelect.value, 'loading');
+          } else {
+            var hint = document.getElementById('topicHint');
+            if (hint) hint.innerHTML = '<span style="color:#f59e0b;">⚠️ اختر موضوعاً مفعلاً أولاً</span>';
+          }
+        });
+      }
+    }
+
+    // ====== Generate AI ======
+    function generateWithAI(topic, specialty) {
+      if (!specialty || specialty === '' || specialty === 'اختر التخصص...') { 
+        showToast('⚠️ يرجى اختيار التخصص أولاً', 'error'); 
+        return; 
+      }
+      if (!topic || topic === '' || topic === 'اختر الموضوع...') {
+        showToast('⚠️ يرجى اختيار الموضوع أولاً', 'error');
+        return;
+      }
+      
+      showToast('⏳ جاري التوليد بالذكاء الاصطناعي لتخصص: ' + specialty + '...', 'loading');
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            var content = result.content;
+            var targetAudience = document.getElementById('targetAudience');
+            var objective = document.getElementById('objective');
+            if (targetAudience) targetAudience.value = content.targetAudience || '';
+            if (objective) objective.value = content.objective || '';
+            
+            if (content.workPlan && content.workPlan.length >= 4) {
+              for (var i = 1; i <= 4; i++) {
+                var el = document.getElementById('workPlan' + i);
+                if (el) el.value = content.workPlan[i - 1] || '';
+              }
+            }
+            if (content.outputs && content.outputs.length >= 4) {
+              for (var i = 1; i <= 4; i++) {
+                var el = document.getElementById('output' + i);
+                if (el) el.value = content.outputs[i - 1] || '';
+              }
+            }
+            if (content.durations && content.durations.length >= 4) {
+              for (var i = 1; i <= 4; i++) {
+                var el = document.getElementById('duration' + i);
+                if (el) el.value = content.durations[i - 1] || '';
+              }
+            }
+            
+            updateAllCounters();
+            
+            var isFallback = result._fallback || false;
+            if (isFallback) {
+              showToast('⚠️ تم استخدام المحتوى الاحتياطي (API غير متاح)', 'info');
+            } else {
+              showToast('✅ تم التوليد بنجاح لتخصص: ' + specialty, 'success');
+            }
+          } else {
+            showToast('❌ خطأ في التوليد: ' + (result.message || 'غير معروف'), 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ خطأ في التوليد: ' + error.message, 'error');
+        })
+        .generateAIContent(topic, specialty);
+    }
+
+    // ====== Collect Form Data ======
+    function collectFormData() {
+      var attendeeSelect = document.getElementById('attendees');
+      var selectedOptions = Array.from(attendeeSelect.selectedOptions);
+      var selectedAttendees = selectedOptions.map(function(opt) { return opt.value; });
+      var attendeesText = selectedAttendees.join('، ');
+      var topicValue = document.getElementById('meetingTopic').value;
+      var cleanTopic = topicValue;
+      var meetingNumber = '';
+      if (topicValue) {
+        var match = topicValue.match(/^\[(\d+)\]\s*(.*)/);
+        if (match) { meetingNumber = match[1]; cleanTopic = match[2]; } else { cleanTopic = topicValue; }
+      }
+      if (!meetingNumber && topicValue) {
+        var status = topicStatus[topicValue];
+        if (status && status.number) meetingNumber = status.number;
+      }
+      if (cleanTopic && cleanTopic.match(/^\[\d+\]\s*/)) {
+        cleanTopic = cleanTopic.replace(/^\[\d+\]\s*/, '');
+      }
+      return {
+        meetingTopic: cleanTopic || topicValue,
+        meetingNumber: meetingNumber || 'غير محدد',
+        meetingTopicFull: topicValue,
+        attendeesList: selectedAttendees,
+        attendees: attendeesText,
+        meetingLocation: document.getElementById('meetingLocation').value,
+        specialty: document.getElementById('specialty').value,
+        targetAudience: document.getElementById('targetAudience').value,
+        objective: document.getElementById('objective').value,
+        workPlan: {
+          plan1: document.getElementById('workPlan1').value,
+          plan2: document.getElementById('workPlan2').value,
+          plan3: document.getElementById('workPlan3').value,
+          plan4: document.getElementById('workPlan4').value
+        },
+        outputs: {
+          output1: document.getElementById('output1').value,
+          output2: document.getElementById('output2').value,
+          output3: document.getElementById('output3').value,
+          output4: document.getElementById('output4').value
+        },
+        durations: {
+          duration1: document.getElementById('duration1').value,
+          duration2: document.getElementById('duration2').value,
+          duration3: document.getElementById('duration3').value,
+          duration4: document.getElementById('duration4').value
+        },
+        departmentHead: currentDepartmentHead || document.getElementById('headerDepartmentHead').textContent
+      };
+    }
+
+    // ====== Char Counter ======
+    function updateCharCounter(textareaId, counterId, maxLength) {
+      var textarea = document.getElementById(textareaId);
+      var counter = document.getElementById(counterId);
+      if (!textarea || !counter) return;
+      
+      var length = textarea.value.length;
+      counter.textContent = length;
+      counter.className = 'count';
+      if (length <= maxLength) {
+        counter.classList.add('valid');
+      } else {
+        counter.classList.add('danger');
+        textarea.value = textarea.value.substring(0, maxLength);
+        counter.textContent = maxLength;
+        showToast('⚠️ تجاوزت الحد الأقصى للأحرف (' + maxLength + ')', 'warning');
+      }
+    }
+
+    function updateAllCounters() {
+      var fields = [
+        { id: 'targetAudience', counter: 'counterTargetAudience', max: 130 },
+        { id: 'objective', counter: 'counterObjective', max: 130 },
+        { id: 'workPlan1', counter: 'counterWorkPlan1', max: 185 },
+        { id: 'workPlan2', counter: 'counterWorkPlan2', max: 185 },
+        { id: 'workPlan3', counter: 'counterWorkPlan3', max: 185 },
+        { id: 'workPlan4', counter: 'counterWorkPlan4', max: 185 },
+        { id: 'output1', counter: 'counterOutput1', max: 130 },
+        { id: 'output2', counter: 'counterOutput2', max: 130 },
+        { id: 'output3', counter: 'counterOutput3', max: 130 },
+        { id: 'output4', counter: 'counterOutput4', max: 130 },
+        { id: 'duration1', counter: 'counterDuration1', max: 60 },
+        { id: 'duration2', counter: 'counterDuration2', max: 60 },
+        { id: 'duration3', counter: 'counterDuration3', max: 60 },
+        { id: 'duration4', counter: 'counterDuration4', max: 60 }
+      ];
+      fields.forEach(function(field) {
+        updateCharCounter(field.id, field.counter, field.max);
+      });
+    }
+
+    function initCharCounters() {
+      setTimeout(function() {
+        updateAllCounters();
+      }, 500);
+    }
+
+    // ====== Save PDF ======
+    function saveAndExportPDF() {
+      if (!isLoggedIn) { 
+        showToast('يرجى الدخول بالكود أولاً', 'error'); 
+        return; 
+      }
+      if (!validateRequiredFields()) return;
+      if (!validateTopic()) return;
+      
+      showProgress('📄 جاري إنشاء PDF...', 'جاري التجهيز...', 0);
+      var data = collectFormData();
+      
+      setTimeout(function() { updateProgress(20, 'جمع البيانات...'); }, 200);
+      setTimeout(function() { updateProgress(40, 'نسخ القالب...'); }, 600);
+      setTimeout(function() { updateProgress(60, 'استبدال المتغيرات...'); }, 1000);
+      setTimeout(function() { updateProgress(80, 'تحويل إلى PDF...'); }, 1500);
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          updateProgress(100, '✅ تم التصدير بنجاح!');
+          if (result.success) {
+            setTimeout(function() {
+              hideProgress();
+              showToast('✅ ' + result.message, 'success');
+              if (result.pdfUrl) window.open(result.pdfUrl, '_blank');
+            }, 500);
+          } else {
+            setTimeout(function() {
+              hideProgress();
+              showToast('❌ ' + (result.message || 'خطأ في التصدير'), 'error');
+            }, 500);
+          }
+        })
+        .withFailureHandler(function(error) {
+          updateProgress(100, '❌ حدث خطأ');
+          setTimeout(function() { 
+            hideProgress(); 
+            showToast('❌ خطأ في التصدير: ' + error.message, 'error'); 
+          }, 500);
+        })
+        .saveAndExportPDF(data);
+    }
+
+    // ====== Tracker Functions ======
+    function openTrackerModal() {
+      var modal = document.getElementById('trackerModal');
+      if (modal) {
+        modal.classList.add('active');
+        loadLeadersExecution();
+      }
+    }
+
+    function closeTrackerModal() {
+      var modal = document.getElementById('trackerModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function loadLeadersExecution() {
+      showToast('⏳ جاري تحميل بيانات التنفيذ...', 'loading');
+      var container = document.getElementById('leadersExecutionContainer');
+      if (container) {
+        container.innerHTML = '<div style="text-align: center; padding: 30px; color: #6b7280;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem;"></i><p style="margin-top: 10px;">جاري تحميل البيانات...</p></div>';
+      }
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result && result.success) {
+            displayLeadersExecution(result);
+            showToast('✅ تم تحميل البيانات', 'success');
+          } else {
+            showToast('❌ ' + (result?.message || 'خطأ في تحميل البيانات'), 'error');
+            displayEmptyExecution();
+          }
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ خطأ في تحميل البيانات: ' + error.message, 'error');
+          displayEmptyExecution();
+        })
+        .getLeadersExecutionData();
+    }
+
+    // ====== Display Leaders Execution ======
+    function displayLeadersExecution(result) {
+      var container = document.getElementById('leadersExecutionContainer');
+      if (!container) return;
+      if (!result || !result.success || !result.data || result.data.length === 0) { 
+        displayEmptyExecution(); 
+        return; 
+      }
+      
+      var stats = result.stats || {};
+      var statsHTML = '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px;">' +
+        '<div style="background: #f3f4f6; padding: 10px; border-radius: 8px; text-align: center;"><div style="font-size: 1.2rem; font-weight: 700; color: #4f6ef7;">' + (stats.totalLeaders || 0) + '</div><div style="font-size: 0.7rem; color: #6b7280;">عدد الرؤساء</div></div>' +
+        '<div style="background: #d1fae5; padding: 10px; border-radius: 8px; text-align: center;"><div style="font-size: 1.2rem; font-weight: 700; color: #065f46;">' + (stats.executed || 0) + '</div><div style="font-size: 0.7rem; color: #065f46;">✅ منفذ</div></div>' +
+        '<div style="background: #fee2e2; padding: 10px; border-radius: 8px; text-align: center;"><div style="font-size: 1.2rem; font-weight: 700; color: #991b1b;">' + (stats.notExecuted || 0) + '</div><div style="font-size: 0.7rem; color: #991b1b;">❌ لم ينفذ</div></div>' +
+        '<div style="background: #fef3c7; padding: 10px; border-radius: 8px; text-align: center;"><div style="font-size: 1.2rem; font-weight: 700; color: #92400e;">' + (stats.totalTopics || 0) + '</div><div style="font-size: 0.7rem; color: #92400e;">عدد الموضوعات</div></div>' +
+        '</div>';
+      
+      var headers = result.headers || [];
+      var tableHTML = '<div style="overflow-x: auto; max-height: 400px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px;">' +
+        '<table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">' +
+        '<thead style="position: sticky; top: 0; background: #f0f4ff; z-index: 10;">' +
+        '<tr>' +
+        '<th style="padding: 8px; text-align: center; border-bottom: 2px solid #ddd; color: #000000; background: #f0f4ff;">#</th>' +
+        '<th style="padding: 8px; text-align: center; border-bottom: 2px solid #ddd; color: #000000; background: #f0f4ff; min-width: 150px;">رئيس القسم</th>';
+      
+      var topicNumbers = [];
+      for (var i = 2; i < headers.length - 1; i++) {
+        var headerText = headers[i] || '';
+        var numberMatch = headerText.match(/\[(\d+)\]/);
+        var displayText = numberMatch ? '[' + numberMatch[1] + ']' : headerText;
+        var number = numberMatch ? numberMatch[1] : '';
+        topicNumbers.push(number);
+        tableHTML += '<th style="padding: 8px; text-align: center; border-bottom: 2px solid #ddd; color: #000000; background: #f0f4ff; min-width: 45px; font-size: 0.75rem;" title="' + headerText + '">' + displayText + '</th>';
+      }
+      tableHTML += '<th style="padding: 8px; text-align: center; border-bottom: 2px solid #ddd; color: #000000; background: #f0f4ff;">المجموع</th>' +
+        '<th style="padding: 8px; text-align: center; border-bottom: 2px solid #ddd; color: #000000; background: #f0f4ff;">مساءلة</th></tr></thead><tbody>';
+      
+      result.data.forEach(function(leader, index) {
+        var executedCount = 0;
+        var totalTopics = leader.totalTopics || 0;
+        var executions = leader.executions || {};
+        tableHTML += '<tr style="border-bottom: 1px solid #e5e7eb;">';
+        tableHTML += '<td style="padding: 8px; text-align: center;">' + (index + 1) + '</td>';
+        tableHTML += '<td style="padding: 8px; text-align: center; font-weight: 500;">' + (leader.name || '') + '</td>';
+        
+        for (var j = 0; j < topicNumbers.length; j++) {
+          var topicNum = topicNumbers[j];
+          var header = headers[j + 2] || '';
+          var status = executions[header] || '☐';
+          if (status === '✅') executedCount++;
+          var bgColor = status === '✅' ? '#d1fae5' : '#f3f4f6';
+          tableHTML += '<td style="padding: 4px; text-align: center; background: ' + bgColor + '; border-radius: 4px; cursor: pointer;" onclick="toggleExecution(\'' + leader.name.replace(/'/g, "\\'") + '\', \'' + topicNum + '\')">' + status + '</td>';
+        }
+        tableHTML += '<td style="padding: 8px; text-align: center; font-weight: 600;">' + executedCount + '/' + totalTopics + '</td>';
+        
+        tableHTML += '<td style="padding: 4px; text-align: center;">' +
+          '<button onclick="printSingleAccountability(\'' + leader.name.replace(/'/g, "\\'") + '\')" style="background: #dc2626; color: white; border: none; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 0.65rem; font-family: \'Tajawal\', sans-serif; display: inline-flex; align-items: center; gap: 3px;">' +
+          '<i class="fas fa-file-signature"></i> مساءلة</button></td>';
+        tableHTML += '</tr>';
+      });
+      
+      tableHTML += '</tbody></table></div>';
+      
+      var printButton = '<div style="margin: 15px 0; text-align: center;"><button class="btn btn-primary" onclick="printTrackerTable()" style="background: #4f6ef7; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer;"><i class="fas fa-print"></i> طباعة التقرير العام</button></div>';
+      
+      container.innerHTML = statsHTML + tableHTML + printButton;
+    }
+
+    function displayEmptyExecution() {
+      var container = document.getElementById('leadersExecutionContainer');
+      if (container) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #6b7280;"><i class="fas fa-inbox" style="font-size: 3rem;"></i><p style="margin-top: 10px;">لا توجد بيانات لعرضها</p><button class="btn btn-primary" onclick="syncTrackerData()" style="margin-top: 10px; background: #8b5cf6; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer;"><i class="fas fa-sync"></i> مزامنة البيانات</button></div>';
+      }
+    }
+
+    // ====== طباعة المساءلة الفردية ======
+    function printSingleAccountability(leaderName) {
+      showToast('⏳ جاري تجهيز المساءلة...', 'loading');
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (!result || !result.success) {
+            showToast('❌ خطأ في جلب البيانات', 'error');
+            return;
+          }
+          
+          var leader = null;
+          for (var i = 0; i < result.data.length; i++) {
+            if (result.data[i].name === leaderName) {
+              leader = result.data[i];
+              break;
+            }
+          }
+          
+          if (!leader) {
+            showToast('❌ لم يتم العثور على الرئيس', 'error');
+            return;
+          }
+          
+          var notExecutedTopics = [];
+          var headers = result.headers || [];
+          
+          for (var j = 2; j < headers.length - 1; j++) {
+            var header = headers[j] || '';
+            var status = leader.executions[header] || '☐';
+            if (status !== '✅') {
+              var match = header.match(/\[(\d+)\]/);
+              var num = match ? match[1] : '';
+              var name = (result.topicNames && result.topicNames[num]) 
+                ? result.topicNames[num] 
+                : header;
+              notExecutedTopics.push({ number: num, name: name });
+            }
+          }
+          
+          if (notExecutedTopics.length === 0) {
+            showToast('🎉 هذا الرئيس نفذ جميع الموضوعات', 'success');
+            return;
+          }
+          
+          printSingleAccountabilityForm(leaderName, notExecutedTopics);
+        })
+        .withFailureHandler(function(error) {
+          console.error('❌ خطأ:', error);
+          showToast('❌ خطأ: ' + error.message, 'error');
+        })
+        .getLeadersExecutionData();
+    }
+
+    function printSingleAccountabilityForm(leaderName, topics) {
+      var topicsRows = '';
+      topics.forEach(function(topic, index) {
+        topicsRows += '<tr>' +
+          '<td>' + (index + 1) + '</td>' +
+          '<td style="font-weight: 700; color: #dc2626;">[' + (topic.number || '-') + ']</td>' +
+          '<td class="topic-name">' + topic.name + '</td>' +
+          '<td style="color: #dc2626; font-weight: 700;">❌ لم ينفذ</td>' +
+          '</tr>';
+      });
+      
+      var printWindow = window.open('', '_blank', 'width=900,height=1200');
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html dir="rtl">
+        <head>
+          <title>مساءلة إدارية - ${leaderName}</title>
+          <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+          <style>
+            * { box-sizing: border-box; margin: 0; padding: 0; }
+            html, body { font-family: 'Tajawal', sans-serif; direction: rtl; background: #e5e7eb; padding: 20px; margin: 0; }
+            .page { width: 210mm; height: 297mm; max-width: 800px; margin: 0 auto 20px auto; background: white; border: 2px solid #1f2937; padding: 15mm; page-break-after: always; page-break-inside: avoid; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+            .header { text-align: center; border-bottom: 3px double #1f2937; padding-bottom: 12px; margin-bottom: 15px; }
+            .header .kingdom { font-size: 17px; font-weight: 700; color: #1f2937; margin-bottom: 5px; }
+            .header .ministry { font-size: 15px; color: #374151; margin-bottom: 4px; font-weight: 600; }
+            .header .school { font-size: 13px; color: #6b7280; font-weight: 500; }
+            .title-box { text-align: center; margin: 12px 0; padding: 10px 14px; background: #fef2f2; border: 2px solid #dc2626; border-radius: 8px; }
+            .title-box h1 { font-size: 19px; font-weight: 700; color: #dc2626; margin-bottom: 4px; }
+            .title-box .subtitle { font-size: 11px; color: #991b1b; }
+            .info-section { margin: 10px 0; padding: 10px 14px; background: #f9fafb; border-radius: 8px; }
+            .info-row { display: flex; margin-bottom: 6px; align-items: center; }
+            .info-row:last-child { margin-bottom: 0; }
+            .info-label { font-weight: 700; color: #1f2937; min-width: 120px; font-size: 12px; }
+            .info-value { color: #1f2937; font-size: 12px; flex: 1; padding: 5px 10px; background: white; border: 1px solid #d1d5db; border-radius: 6px; font-weight: 500; }
+            .body-text { margin: 10px 0; font-size: 12px; color: #1f2937; line-height: 1.9; text-align: justify; }
+            .body-text p { margin-bottom: 6px; }
+            .topics-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 11px; border-radius: 6px; overflow: hidden; }
+            .topics-table th { background: #1f2937; color: white; padding: 8px 6px; text-align: center; border: 1px solid #1f2937; font-weight: 600; font-size: 11px; }
+            .topics-table td { padding: 8px 6px; border: 1px solid #d1d5db; text-align: center; font-size: 11px; }
+            .topics-table td.topic-name { text-align: right; font-weight: 600; color: #1f2937; }
+            .reasons-section { margin: 10px 0; }
+            .reasons-section .reasons-title { font-weight: 700; font-size: 12px; color: #1f2937; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid #e5e7eb; }
+            .reasons-box { border: 2px solid #d1d5db; border-radius: 6px; padding: 10px 15px; min-height: 90px; background: #fafafa; }
+            .reasons-box .line { border-bottom: 1px dotted #9ca3af; height: 20px; margin-bottom: 5px; }
+            .pledge-section { margin: 10px 0; padding: 10px 14px; background: #f0f9ff; border-right: 4px solid #0ea5e9; border-radius: 4px; font-size: 11px; color: #0c4a6e; line-height: 1.8; }
+            .signatures { margin-top: auto; padding-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+            .signature-box { text-align: center; }
+            .signature-box .sig-title { font-weight: 700; font-size: 12px; color: #1f2937; margin-bottom: 3px; }
+            .signature-box .sig-name { font-size: 11px; color: #374151; margin-bottom: 20px; font-weight: 500; }
+            .signature-box .sig-line { border-top: 2px solid #1f2937; padding-top: 6px; font-size: 10px; color: #6b7280; }
+            .date-line { text-align: left; margin-top: 10px; font-size: 10px; color: #6b7280; padding-top: 6px; border-top: 1px solid #e5e7eb; }
+            @page { size: A4 portrait; margin: 0; }
+            @media print {
+              html, body { background: white; padding: 0; margin: 0; }
+              .page { width: 210mm; height: 297mm; border: none; margin: 0; padding: 15mm; box-shadow: none; border-radius: 0; }
+              .no-print { display: none !important; }
+            }
+            .print-btn { position: fixed; bottom: 20px; left: 20px; background: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); z-index: 9999; }
+            .print-btn:hover { background: #b91c1c; }
+          </style>
+        </head>
+        <body>
+          <button class="print-btn no-print" onclick="window.print()">🖨️ طباعة</button>
+          
+          <div class="page">
+            <div class="header">
+              <div class="kingdom">المملكة العربية السعودية</div>
+              <div class="ministry">وزارة التعليم</div>
+              <div class="school">مدرسة ربعي بن عامر</div>
+            </div>
+            
+            <div class="title-box">
+              <h1>⚠️ مساءلة إدارية</h1>
+              <div class="subtitle">بشأن عدم تنفيذ اجتماع المجتمع المهني</div>
+            </div>
+            
+            <div class="info-section">
+              <div class="info-row">
+                <div class="info-label">الاسم:</div>
+                <div class="info-value">${leaderName}</div>
+              </div>
+              <div class="info-row">
+                <div class="info-label">العام الدراسي:</div>
+                <div class="info-value">1448 هـ</div>
+              </div>
+            </div>
+            
+            <div class="body-text">
+              <p>بناءً على متابعة إدارة المدرسة لتنفيذ اجتماعات <strong>المجتمع المهني</strong>، وحرصاً على تحقيق الأهداف التربوية والتعليمية المرجوة، تبين عدم تنفيذكم للاجتماعات المتعلقة بالموضوعات التالية:</p>
+            </div>
+            
+            <table class="topics-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">م</th>
+                  <th style="width: 100px;">رقم الموضوع</th>
+                  <th>موضوع الاجتماع</th>
+                  <th style="width: 110px;">الحالة</th>
+                </tr>
+              </thead>
+              <tbody>${topicsRows}</tbody>
+            </table>
+            
+            <div class="reasons-section">
+              <div class="reasons-title">✍️ يرجى كتابة أسباب عدم التنفيذ بوضوح:</div>
+              <div class="reasons-box">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+              </div>
+            </div>
+            
+            <div class="pledge-section">
+              <strong>📌 تعهد:</strong><br>
+              أتعهد بأنني على علم تام بأهمية تنفيذ اجتماعات المجتمع المهني في الوقت المحدد، وألتزم بتنفيذ جميع الاجتماعات القادمة وفق الخطة المعتمدة، وأتحمل كامل المسؤولية في حال تكرار عدم التنفيذ.
+            </div>
+            
+             <div class="signatures">
+          <div class="signature-box">
+            <div class="sig-title">توقيع رئيس القسم</div>
+            <div class="sig-name">${leaderName}</div>
+            <div class="sig-line">التوقيع: _________________</div>
+            <div class="sig-line" style="margin-top: 10px;">التاريخ: ____/____/1448 هـ</div>
+          </div>
+          <div class="signature-box">
+            <div class="sig-title">وكيل الشؤون التعليمية</div>
+            <div class="sig-name">محمد علي الكردي</div>
+            <div class="sig-line">التوقيع: _________________</div>
+            <div class="sig-line" style="margin-top: 10px;">التاريخ: ____/____/1448 هـ</div>
+          </div>
+        </div>
+            
+            <div class="date-line">تاريخ إصدار المساءلة: ${new Date().toLocaleDateString('ar-SA')}</div>
+          </div>
+        </body>
+        </html>
+      `);
+      
+      printWindow.document.close();
+      setTimeout(function() { printWindow.focus(); showToast('✅ تم تجهيز المساءلة', 'success'); }, 500);
+    }
+
+    // ====== طباعة التقرير العام ======
+    function printTrackerTable() {
+      showToast('⏳ جاري تجهيز التقرير للطباعة...', 'loading');
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (!result || !result.success) {
+            showToast('❌ خطأ في جلب البيانات', 'error');
+            return;
+          }
+          
+          var printWindow = window.open('', '_blank', 'width=1200,height=900');
+          printWindow.document.write('<html><head><title>تقرير متابعة التنفيذ</title>');
+          printWindow.document.write('<style>');
+          printWindow.document.write('* { box-sizing: border-box; }');
+          printWindow.document.write('body { font-family: "Tajawal", sans-serif; direction: rtl; padding: 15px; background: white; }');
+          printWindow.document.write('h2 { text-align: center; color: #1f2937; margin-bottom: 12px; font-size: 1.3rem; }');
+          printWindow.document.write('.subtitle { text-align: center; color: #6b7280; font-size: 0.8rem; margin-bottom: 12px; }');
+          var stats = result.stats || {};
+          printWindow.document.write('.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0; }');
+          printWindow.document.write('.stat-box { padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #ddd; }');
+          printWindow.document.write('.stat-box .number { font-size: 1.3rem; font-weight: 700; }');
+          printWindow.document.write('.stat-box .label { font-size: 0.75rem; color: #6b7280; }');
+          printWindow.document.write('.bg-gray { background: #f3f4f6; }');
+          printWindow.document.write('.bg-green { background: #d1fae5; }');
+          printWindow.document.write('.bg-red { background: #fee2e2; }');
+          printWindow.document.write('.bg-yellow { background: #fef3c7; }');
+          printWindow.document.write('table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.85rem; }');
+          printWindow.document.write('th { background: #e8f0fe !important; color: #1a3a6b !important; padding: 8px 6px; text-align: center; border: 1px solid #999; font-weight: 700; font-size: 0.8rem; }');
+          printWindow.document.write('td { padding: 6px 4px; text-align: center; border: 1px solid #999; font-size: 0.8rem; }');
+          printWindow.document.write('tr:nth-child(even) { background: #f9fafb; }');
+          printWindow.document.write('@page { size: A4 landscape; margin: 8mm; }');
+          printWindow.document.write('@media print { body { padding: 5mm; } th { background: #e8f0fe !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } td { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }');
+          printWindow.document.write('</style></head><body>');
+          
+          printWindow.document.write('<h2>📚 المجتمع المهني</h2>');
+          printWindow.document.write('<h2>📋 تقرير متابعة تنفيذ رؤساء الأقسام</h2>');
+          printWindow.document.write('<div class="subtitle">' + new Date().toLocaleString('ar-SA') + '</div>');
+          
+          printWindow.document.write('<div class="stats">');
+          printWindow.document.write('<div class="stat-box bg-gray"><div class="number">' + (stats.totalLeaders || 0) + '</div><div class="label">👔 عدد الرؤساء</div></div>');
+          printWindow.document.write('<div class="stat-box bg-green"><div class="number">' + (stats.executed || 0) + '</div><div class="label">✅ منفذ</div></div>');
+          printWindow.document.write('<div class="stat-box bg-red"><div class="number">' + (stats.notExecuted || 0) + '</div><div class="label">❌ لم ينفذ</div></div>');
+          printWindow.document.write('<div class="stat-box bg-yellow"><div class="number">' + (stats.totalTopics || 0) + '</div><div class="label">📚 عدد الموضوعات</div></div>');
+          printWindow.document.write('</div>');
+          
+          var headers = result.headers || [];
+          var data = result.data || [];
+          
+          printWindow.document.write('<table>');
+          printWindow.document.write('<thead><tr>');
+          for (var i = 0; i < headers.length; i++) {
+            var header = headers[i] || '';
+            var displayText = header;
+            var match = header.match(/\[(\d+)\]/);
+            if (match) displayText = '[' + match[1] + ']';
+            printWindow.document.write('<th>' + displayText + '</th>');
+          }
+          printWindow.document.write('</tr></thead><tbody>');
+          
+          for (var r = 0; r < data.length; r++) {
+            var leader = data[r];
+            var executions = leader.executions || {};
+            var totalTopics = leader.totalTopics || 0;
+            var executedCount = 0;
+            
+            printWindow.document.write('<tr>');
+            printWindow.document.write('<td style="font-weight: 600;">' + (r + 1) + '</td>');
+            printWindow.document.write('<td style="font-weight: 600; text-align: center;">' + (leader.name || '') + '</td>');
+            
+            for (var c = 2; c < headers.length - 1; c++) {
+              var header = headers[c] || '';
+              var status = executions[header] || '☐';
+              if (status === '✅') executedCount++;
+              var bgColor = status === '✅' ? '#d1fae5' : '#ffffff';
+              printWindow.document.write('<td style="background: ' + bgColor + ';">' + status + '</td>');
+            }
+            
+            printWindow.document.write('<td style="font-weight: 700;">' + executedCount + '/' + totalTopics + '</td>');
+            printWindow.document.write('</tr>');
+          }
+          printWindow.document.write('</tbody></table>');
+          
+          printWindow.document.write('<div style="text-align: center; color: #6b7280; font-size: 0.75rem; margin-top: 15px; border-top: 1px solid #ddd; padding-top: 8px;">');
+          printWindow.document.write('تم إنشاء التقرير في: ' + new Date().toLocaleString('ar-SA') + ' | جميع الحقوق محفوظة © المجتمع المهني');
+          printWindow.document.write('</div>');
+          printWindow.document.write('</body></html>');
+          printWindow.document.close();
+          
+          setTimeout(function() {
+            printWindow.focus();
+            printWindow.print();
+            showToast('✅ تم فتح التقرير للطباعة', 'success');
+          }, 1000);
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ خطأ: ' + error.message, 'error');
+        })
+        .getLeadersExecutionData();
+    }
+
+    // ====== Tracker Sync ======
+    function resetTrackerSheet() {
+      if (!confirm('سيتم حذف شيت المتابعة الحالي وإنشاء شيت جديد. هل أنت متأكد؟')) return;
+      showToast('⏳ جاري إعادة إنشاء شيت المتابعة...', 'loading');
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showToast('✅ تم إعادة إنشاء شيت المتابعة بنجاح (' + (result.topicsCount || 0) + ' موضوع)', 'success');
+            loadLeadersExecution();
+          } else {
+            showToast('❌ ' + (result.message || 'خطأ في إعادة إنشاء الشيت'), 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ خطأ: ' + error.message, 'error');
+        })
+        .resetTrackerSheet();
+    }
+
+    function syncTrackerData() {
+      showToast('⏳ جاري مزامنة البيانات...', 'loading');
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showToast('✅ ' + (result.message || 'تمت المزامنة بنجاح'), 'success');
+            loadLeadersExecution();
+          } else {
+            showToast('❌ ' + (result.message || 'خطأ في المزامنة'), 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ خطأ: ' + error.message, 'error');
+        })
+        .syncTrackerData();
+    }
+
+    function toggleExecution(leaderName, topicName) {
+      showToast('⏳ جاري تحديث الحالة...', 'loading');
+      var topicNumber = '';
+      var match = topicName.match(/\[(\d+)\]/);
+      if (match) {
+        topicNumber = match[1];
+      } else {
+        topicNumber = topicName;
+      }
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result && result.success) {
+            showToast('✅ تم تحديث الحالة بنجاح', 'success');
+            setTimeout(function() { loadLeadersExecution(); }, 500);
+          } else {
+            showToast('❌ ' + (result?.message || 'خطأ في تحديث الحالة'), 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ خطأ: ' + error.message, 'error');
+        })
+        .toggleLeaderExecution(leaderName, topicNumber);
+    }
+
+    // ====== Folder ======
+    function openReportsFolder() {
+      if (!isAdmin) { showToast('⚠️ هذه الخاصية متاحة للمدير فقط', 'error'); return; }
+      showToast('⏳ جاري فتح المجلد...', 'loading');
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showToast('✅ فتح المجلد: ' + result.name, 'success');
+            window.open(result.url, '_blank');
+          } else {
+            showToast('❌ ' + (result.message || 'خطأ في فتح المجلد'), 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ خطأ: ' + error.message, 'error');
+        })
+        .getReportsFolderUrl();
+    }
+
+    // ====== Topics Management ======
+    function openTopicModal() {
+      if (!isAdmin) { showToast('⚠️ هذه الخاصية متاحة للمدير فقط', 'error'); return; }
+      var modal = document.getElementById('topicModal');
+      if (modal) {
+        modal.classList.add('active');
+        displayTopics();
+      }
+    }
+
+    function closeTopicModal() {
+      var modal = document.getElementById('topicModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function displayTopics() {
+      var container = document.getElementById('topicsList');
+      if (!container) return;
+      container.innerHTML = '';
+      
+      if (topicsList.length === 0) {
+        container.innerHTML = '<div style="padding: 15px; text-align: center; color: #6b7280; font-size: 0.85rem;">لا توجد موضوعات</div>';
+        return;
+      }
+      
+      topicsList.forEach(function(topic) {
+        var status = topicStatus[topic] || { start: '-', end: '-', active: false, number: '-', statusText: '⚠️ غير معروف' };
+        var number = status.number || '-';
+        var cleanTopic = topic.replace(/^\[\d+\]\s*/, '');
+        
+        var statusDisplay = '';
+        var statusClass = '';
+        
+        if (status.active === true) { statusDisplay = '✅ مفعل'; statusClass = 'active'; }
+        else if (status.statusText && status.statusText.includes('باقي')) { statusDisplay = '⏳ ' + status.statusText; statusClass = 'waiting'; }
+        else if (status.statusText && status.statusText.includes('منتهي')) { statusDisplay = '❌ منتهي'; statusClass = 'inactive'; }
+        else if (status.statusText && status.statusText !== '⚠️ بدون تاريخ') { statusDisplay = '⚠️ ' + status.statusText; statusClass = 'unknown'; }
+        else { statusDisplay = '⚠️ غير معروف'; statusClass = 'unknown'; }
+        
+        var div = document.createElement('div');
+        div.className = 'topic-item';
+        div.innerHTML = '<div class="topic-info"><div class="topic-name">[' + number + '] ' + cleanTopic + '</div><div class="topic-dates"><span class="topic-status ' + statusClass + '">' + statusDisplay + '</span> 📅 ' + (status.start || '-') + ' ← ' + (status.end || '-') + '</div></div><div class="topic-actions"><button class="btn-icon-sm btn-delete" onclick="deleteTopic(\'' + topic + '\')"><i class="fas fa-trash"></i></button></div>';
+        container.appendChild(div);
+      });
+    }
+
+    function addNewTopic() {
+      if (!isAdmin) { showToast('⚠️ هذه الخاصية متاحة للمدير فقط', 'error'); return; }
+      var name = document.getElementById('newTopicName').value.trim();
+      var start = document.getElementById('topicStartDate').value;
+      var end = document.getElementById('topicEndDate').value;
+      if (!name) { showToast('يرجى إدخال اسم الموضوع', 'error'); return; }
+      if (!start || !end) { showToast('يرجى تحديد التواريخ', 'error'); return; }
+      if (new Date(start) > new Date(end)) { showToast('تاريخ البدء قبل تاريخ الانتهاء', 'error'); return; }
+      
+      showToast('⏳ جاري إضافة الموضوع...', 'loading');
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            var topicWithNumber = result.topicWithNumber;
+            topicsList.push(topicWithNumber);
+            var now = new Date();
+            var startDate = new Date(start);
+            var endDate = new Date(end);
+            now.setHours(0, 0, 0, 0);
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(0, 0, 0, 0);
+            var statusText = '';
+            var isActive = false;
+            if (now >= startDate && now <= endDate) { statusText = '✅ مفعل'; isActive = true; }
+            else if (now < startDate) { var daysLeft = Math.ceil((startDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)); statusText = '⏳ باقي ' + daysLeft + ' يوم' + (daysLeft > 1 ? 'اً' : '') + ' للبدء'; }
+            else if (now > endDate) { statusText = '❌ منتهي'; }
+            topicStatus[topicWithNumber] = { start: formatDate(startDate), end: formatDate(endDate), active: isActive, statusText: statusText, number: result.number };
+            var select = document.getElementById('meetingTopic');
+            var opt = document.createElement('option');
+            opt.value = topicWithNumber;
+            var cleanTopic = topicWithNumber.replace(/^\[\d+\]\s*/, '');
+            opt.textContent = '[' + result.number + '] ' + cleanTopic + (statusText ? ' ' + statusText : '');
+            select.appendChild(opt);
+            document.getElementById('newTopicName').value = '';
+            document.getElementById('topicStartDate').value = '';
+            document.getElementById('topicEndDate').value = '';
+            displayTopics();
+            showToast('✅ تم إضافة الموضوع بنجاح! (الرقم: ' + result.number + ')', 'success');
+          }
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ ' + error.message, 'error');
+        })
+        .addNewTopic({ name: name, startDate: start, endDate: end });
+    }
+
+    function deleteTopic(topicName) {
+      if (!confirm('حذف الموضوع: ' + topicName + '؟')) return;
+      showToast('⏳ جاري حذف الموضوع...', 'loading');
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            var index = topicsList.indexOf(topicName);
+            if (index > -1) {
+              topicsList.splice(index, 1);
+              delete topicStatus[topicName];
+              var select = document.getElementById('meetingTopic');
+              for (var i = 0; i < select.options.length; i++) {
+                if (select.options[i].value === topicName) { select.remove(i); break; }
+              }
+              displayTopics();
+              showToast('✅ تم حذف الموضوع!', 'success');
+            }
+          }
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ ' + error.message, 'error');
+        })
+        .deleteTopic(topicName);
+    }
+
+    // ====== Leaders Management ======
+    function openLeaderModal() {
+      if (!isAdmin) { showToast('⚠️ هذه الخاصية متاحة للمدير فقط', 'error'); return; }
+      document.getElementById('leaderModal').classList.add('active');
+      displayLeaders();
+    }
+
+    function closeLeaderModal() {
+      document.getElementById('leaderModal').classList.remove('active');
+    }
+
+    function displayLeaders() {
+      var availableContainer = document.getElementById('availableAttendeesList');
+      var leadersContainer = document.getElementById('leadersList');
+      if (!availableContainer || !leadersContainer) return;
+      availableContainer.innerHTML = '';
+      var availableCount = 0;
+      
+      if (attendeesList && attendeesList.length > 0) {
+        attendeesList.forEach(function(name) {
+          if (name && name.toString().trim() !== '') {
+            var cleanName = name.toString().trim();
+            var isLeader = leadersList && leadersList.indexOf(cleanName) !== -1;
+            if (!isLeader) {
+              var div = document.createElement('div');
+              div.className = 'leader-item draggable';
+              div.draggable = true;
+              div.dataset.name = cleanName;
+              div.style.cssText = 'padding:8px 12px;border-bottom:1px solid #eef2f6;display:flex;justify-content:space-between;align-items:center;cursor:pointer;border-right:3px solid #10b981;';
+              div.innerHTML = '<span class="leader-name">' + cleanName + '</span><button class="btn-icon-sm btn-add" onclick="event.stopPropagation();addAttendeeToLeader(\'' + cleanName + '\')">+ إضافة</button>';
+              availableContainer.appendChild(div);
+              availableCount++;
+            }
+          }
+        });
+      }
+      
+      if (availableCount === 0) {
+        var msg = (attendeesList && attendeesList.length > 0) ? 'جميع الحاضرين مضافون كرؤساء' : 'لا يوجد حاضرون';
+        availableContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #6b7280; font-size: 0.85rem;">' + msg + '</div>';
+      }
+      document.getElementById('attendeesCount').textContent = availableCount;
+      
+      leadersContainer.innerHTML = '';
+      if (leadersList && leadersList.length > 0) {
+        leadersList.forEach(function(name) {
+          if (name && name.toString().trim() !== '') {
+            var cleanName = name.toString().trim();
+            var code = leaderCodes && leaderCodes[cleanName] ? leaderCodes[cleanName] : '';
+            var div = document.createElement('div');
+            div.className = 'leader-item draggable';
+            div.draggable = true;
+            div.dataset.name = cleanName;
+            div.style.cssText = 'padding:8px 12px;border-bottom:1px solid #eef2f6;display:flex;justify-content:space-between;align-items:center;cursor:pointer;border-right:3px solid #4f6ef7;';
+            div.innerHTML = '<div><span class="leader-name">' + cleanName + '</span><span class="leader-code">🔑 ' + code + '</span></div><div class="leader-actions"><button class="btn-icon-sm btn-edit" onclick="event.stopPropagation();editLeader(\'' + cleanName + '\')"><i class="fas fa-edit"></i></button><button class="btn-icon-sm btn-delete" onclick="event.stopPropagation();removeLeader(\'' + cleanName + '\')"><i class="fas fa-trash"></i></button></div>';
+            leadersContainer.appendChild(div);
+          }
+        });
+      }
+      
+      if (!leadersList || leadersList.length === 0) {
+        leadersContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #6b7280; font-size: 0.85rem;">لا يوجد رؤساء أقسام</div>';
+      }
+      document.getElementById('leadersCount').textContent = leadersList ? leadersList.length : 0;
+    }
+
+    function addAttendeeToLeader(name) {
+      if (!name) return;
+      if (leadersList.indexOf(name) !== -1) { showToast('⚠️ هذا الاسم موجود بالفعل', 'info'); return; }
+      
+      var code = attendeeCodes[name] || '0000';
+      showToast('⏳ جاري إضافة ' + name + '...', 'loading');
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            var finalCode = result.code || code;
+            leadersList.push(name);
+            leaderCodes[name] = finalCode;
+            displayLeaders();
+            showToast('✅ تم إضافة ' + name + ' (الكود: ' + finalCode + ')', 'success');
+            loadData();
+          } else {
+            showToast('❌ ' + result.message, 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ خطأ: ' + error.message, 'error');
+        })
+        .addSpecialtyLeader({ name: name, code: code });
+    }
+
+    function removeLeader(name) {
+      if (!name) return;
+      showToast('⏳ جاري إزالة ' + name + '...', 'loading');
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            var index = leadersList.indexOf(name);
+            if (index > -1) { leadersList.splice(index, 1); delete leaderCodes[name]; }
+            displayLeaders();
+            showToast('✅ تم إزالة ' + name, 'success');
+            loadData();
+          } else {
+            showToast('❌ ' + result.message, 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ خطأ: ' + error.message, 'error');
+        })
+        .deleteLeaderFromSheet(name);
+    }
+
+    function editLeader(name) {
+      var currentCode = leaderCodes[name] || '';
+      var newCode = prompt('تعديل كود ' + name + ':', currentCode);
+      if (newCode && newCode.trim() && newCode.trim() !== currentCode) {
+        var code = newCode.trim();
+        showToast('⏳ جاري تحديث الكود...', 'loading');
+        google.script.run
+          .withSuccessHandler(function(result) {
+            if (result.success) {
+              leaderCodes[name] = code;
+              displayLeaders();
+              showToast('✅ تم تحديث الكود بنجاح', 'success');
+              loadData();
+            }
+          })
+          .withFailureHandler(function(error) {
+            showToast('❌ خطأ: ' + error.message, 'error');
+          })
+          .updateLeaderCode(name, code);
+      }
+    }
+
+    function addLeader() {
+      if (!isAdmin) { showToast('⚠️ هذه الخاصية متاحة للمدير فقط', 'error'); return; }
+      var name = document.getElementById('newLeaderName').value.trim();
+      var code = document.getElementById('newLeaderCode').value.trim();
+      if (!name) { showToast('يرجى إدخال اسم رئيس التخصص', 'error'); return; }
+      if (!code) { showToast('يرجى إدخال الكود', 'error'); return; }
+      if (leadersList.indexOf(name) !== -1) { showToast('⚠️ هذا الاسم موجود بالفعل', 'error'); return; }
+      
+      showToast('⏳ جاري إضافة رئيس التخصص...', 'loading');
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            leadersList.push(name);
+            leaderCodes[name] = code;
+            document.getElementById('newLeaderName').value = '';
+            document.getElementById('newLeaderCode').value = '';
+            displayLeaders();
+            showToast('✅ تم إضافة رئيس التخصص بنجاح!', 'success');
+            loadData();
+          }
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ ' + error.message, 'error');
+        })
+        .addSpecialtyLeader({ name: name, code: code });
+    }
+
+    function addSelectedAttendees() {
+      var availableContainer = document.getElementById('availableAttendeesList');
+      if (!availableContainer) return;
+      var selectedItems = availableContainer.querySelectorAll('.leader-item.selected');
+      if (selectedItems.length === 0) { showToast('⚠️ يرجى اختيار الحاضرين', 'error'); return; }
+      var names = [];
+      selectedItems.forEach(function(item) {
+        var name = item.dataset.name;
+        if (name && leadersList.indexOf(name) === -1) names.push(name);
+      });
+      if (names.length === 0) { showToast('⚠️ جميع الأسماء مضافون', 'info'); return; }
+      if (!confirm('إضافة ' + names.length + ' حاضر؟')) return;
+      
+      showToast('⏳ جاري الإضافة...', 'loading');
+      var addedSuccess = 0;
+      names.forEach(function(name) {
+        var code = leaderCodes[name] || '0000';
+        google.script.run
+          .withSuccessHandler(function(result) {
+            if (result.success) {
+              leadersList.push(name);
+              leaderCodes[name] = result.code || code;
+              addedSuccess++;
+              if (addedSuccess === names.length) {
+                displayLeaders();
+                showToast('✅ تم إضافة ' + addedSuccess + ' رئيس', 'success');
+                loadData();
+              }
+            }
+          })
+          .addSpecialtyLeader({ name: name, code: code });
+      });
+    }
+
+    function removeSelectedLeaders() {
+      var leadersContainer = document.getElementById('leadersList');
+      if (!leadersContainer) return;
+      var selectedItems = leadersContainer.querySelectorAll('.leader-item.selected');
+      if (selectedItems.length === 0) { showToast('⚠️ يرجى اختيار الرؤساء', 'error'); return; }
+      var names = [];
+      selectedItems.forEach(function(item) {
+        var name = item.dataset.name;
+        if (name) names.push(name);
+      });
+      if (names.length === 0) { showToast('⚠️ لا يوجد رؤساء مختارين', 'info'); return; }
+      if (!confirm('إزالة ' + names.length + ' رئيس؟')) return;
+      
+      showToast('⏳ جاري الإزالة...', 'loading');
+      var removedCount = 0;
+      names.forEach(function(name) {
+        google.script.run
+          .withSuccessHandler(function(result) {
+            if (result.success) {
+              var index = leadersList.indexOf(name);
+              if (index > -1) { leadersList.splice(index, 1); delete leaderCodes[name]; }
+              removedCount++;
+              if (removedCount === names.length) {
+                displayLeaders();
+                showToast('✅ تم إزالة ' + removedCount + ' رئيس', 'success');
+                loadData();
+              }
+            }
+          })
+          .deleteLeaderFromSheet(name);
+      });
+    }
+
+    // ====== Auto Update ======
+    function checkAttendeesStatus() {
+      if (!isAdmin) return;
+      google.script.run
+        .withSuccessHandler(function(result) {
+          var statusEl = document.getElementById('attendeesStatus');
+          if (statusEl) {
+            if (result.permissionError) {
+              statusEl.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i> التحديث التلقائي غير مفعل';
+            } else if (result.success && result.hasTrigger) {
+              statusEl.innerHTML = '<i class="fas fa-check-circle" style="color:#10b981;"></i> التحديث التلقائي مفعل (كل ساعة)';
+            } else {
+              statusEl.innerHTML = '<i class="fas fa-pause-circle" style="color:#6b7280;"></i> التحديث التلقائي غير مفعل';
+            }
+          }
+        })
+        .getAttendeesUpdateStatus();
+    }
+
+    function refreshAttendeesData() {
+      if (!isAdmin) { showToast('⚠️ هذه الخاصية متاحة للمدير فقط', 'error'); return; }
+      showToast('⏳ جاري تحديث قائمة الحاضرون...', 'loading');
+      var btn = document.querySelector('.btn-refresh');
+      if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحديث...'; btn.disabled = true; }
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (btn) { btn.innerHTML = '<i class="fas fa-sync"></i> تحديث الآن'; btn.disabled = false; }
+          if (result.success) {
+            showToast('✅ تم تحديث القائمة (' + result.count + ' معلم)', 'success');
+            checkAttendeesStatus();
+            loadData();
+          }
+        })
+        .withFailureHandler(function(error) {
+          if (btn) { btn.innerHTML = '<i class="fas fa-sync"></i> تحديث الآن'; btn.disabled = false; }
+          showToast('❌ خطأ: ' + error.message, 'error');
+        })
+        .refreshAttendees();
+    }
+
+    function enableAutoUpdate() {
+      if (!isAdmin) { showToast('⚠️ هذه الخاصية متاحة للمدير فقط', 'error'); return; }
+      showToast('⏳ جاري تفعيل التحديث التلقائي...', 'loading');
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showToast('✅ تم تفعيل التحديث التلقائي', 'success');
+            checkAttendeesStatus();
+          }
+        })
+        .toggleAutoUpdate(true);
+    }
+
+    function disableAutoUpdate() {
+      if (!isAdmin) { showToast('⚠️ هذه الخاصية متاحة للمدير فقط', 'error'); return; }
+      showToast('⏳ جاري إيقاف التحديث التلقائي...', 'loading');
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showToast('✅ تم إيقاف التحديث التلقائي', 'success');
+            checkAttendeesStatus();
+          }
+        })
+        .toggleAutoUpdate(false);
+    }
+
+    // ====== Reset Form ======
+    function resetForm() {
+      document.querySelectorAll('textarea').forEach(function(t) { t.value = ''; });
+      document.getElementById('meetingTopic').value = '';
+      document.getElementById('meetingLocation').value = '';
+      document.getElementById('specialty').value = '';
+      document.getElementById('attendees').selectedIndex = -1;
+      document.getElementById('topicHint').innerHTML = '';
+      showToast('🔄 تم إعادة تعيين النموذج', 'success');
+    }
+
+    function formatDate(date) {
+      if (!date || isNaN(date.getTime())) return '-';
+      var d = date.getDate().toString().padStart(2, '0');
+      var m = (date.getMonth() + 1).toString().padStart(2, '0');
+      var y = date.getFullYear();
+      return d + '/' + m + '/' + y;
+    }
+
+    // ====== Accountability (Group) ======
+    function openAccountabilityModal() {
+      var modal = document.getElementById('accountabilityModal');
+      if (!modal) return;
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (!result || !result.success) {
+            showToast('❌ خطأ في جلب البيانات', 'error');
+            return;
+          }
+          
+          accountabilityData = result;
+          var select = document.getElementById('accountabilityTopic');
+          select.innerHTML = '<option value="">اختر الموضوع...</option>';
+          
+          var headers = result.headers || [];
+          for (var i = 2; i < headers.length - 1; i++) {
+            var header = headers[i] || '';
+            var match = header.match(/\[(\d+)\]/);
+            var num = match ? match[1] : '';
+            var topicName = (result.topicNames && result.topicNames[num]) ? result.topicNames[num] : 'الموضوع ' + num;
+            
+            var opt = document.createElement('option');
+            opt.value = header;
+            opt.textContent = '[' + num + '] ' + topicName;
+            opt.dataset.number = num;
+            opt.dataset.name = topicName;
+            select.appendChild(opt);
+          }
+          
+          document.getElementById('leadersSelectionArea').style.display = 'none';
+          document.getElementById('printAccountabilityBtn').style.display = 'none';
+          modal.classList.add('active');
+        })
+        .withFailureHandler(function(error) {
+          showToast('❌ خطأ: ' + error.message, 'error');
+        })
+        .getLeadersExecutionData();
+    }
+
+    function closeAccountabilityModal() {
+      var modal = document.getElementById('accountabilityModal');
+      if (modal) modal.classList.remove('active');
+      accountabilityData = null;
+      selectedTopicForAccountability = '';
+    }
+
+    function loadLeadersForTopic() {
+      var select = document.getElementById('accountabilityTopic');
+      var topicHeader = select.value;
+      var selectedOption = select.options[select.selectedIndex];
+      var area = document.getElementById('leadersSelectionArea');
+      var listContainer = document.getElementById('leadersCheckboxList');
+      var printBtn = document.getElementById('printAccountabilityBtn');
+      
+      if (!topicHeader || !accountabilityData) {
+        area.style.display = 'none';
+        printBtn.style.display = 'none';
+        return;
+      }
+      
+      selectedTopicForAccountability = topicHeader;
+      window._selectedTopicNumber = selectedOption.dataset.number || '';
+      window._selectedTopicName = selectedOption.dataset.name || 'الموضوع';
+      
+      var oldStats = document.getElementById('topicStats');
+      if (oldStats) oldStats.remove();
+      
+      listContainer.innerHTML = '';
+      
+      var notExecuted = [];
+      var executed = [];
+      
+      accountabilityData.data.forEach(function(leader) {
+        var status = leader.executions[topicHeader] || '☐';
+        if (status === '✅') executed.push(leader.name);
+        else notExecuted.push(leader.name);
+      });
+      
+      if (notExecuted.length === 0) {
+        listContainer.innerHTML = '<div style="text-align: center; padding: 25px; color: #065f46; background: #d1fae5; border-radius: 8px; font-weight: 600;"><i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>🎉 جميع الرؤساء نفذوا هذا الموضوع</div>';
+        area.style.display = 'block';
+        printBtn.style.display = 'none';
+        document.getElementById('selectedCount').textContent = '0';
+        return;
+      }
+      
+      notExecuted.forEach(function(name, index) {
+        var div = document.createElement('div');
+        div.style.cssText = 'display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid #eef2f6;';
+        var checkboxId = 'acc_cb_' + index;
+        div.innerHTML = '<input type="checkbox" id="' + checkboxId + '" class="leader-checkbox" value="' + name.replace(/"/g, '&quot;') + '" onchange="updateSelectedCount()" style="width: 18px; height: 18px; cursor: pointer; accent-color: #dc2626;"><label for="' + checkboxId + '" style="flex: 1; font-size: 0.85rem; cursor: pointer; margin: 0;"><span style="color: #94a3b8; margin-left: 6px;">' + (index + 1) + '.</span> ' + name + '</label><span style="background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 10px; font-size: 0.6rem; font-weight: 600;">لم ينفذ</span>';
+        listContainer.appendChild(div);
+      });
+      
+      area.style.display = 'block';
+      printBtn.style.display = 'block';
+      
+      var statsDiv = document.createElement('div');
+      statsDiv.id = 'topicStats';
+      statsDiv.style.cssText = 'margin-top: 8px; padding: 8px; background: #fef3c7; border-radius: 6px; font-size: 0.7rem; color: #92400e; text-align: center;';
+      statsDiv.innerHTML = '<strong>ملخص:</strong> ' + executed.length + ' نفذوا ✅ | ' + notExecuted.length + ' لم ينفذوا ❌';
+      listContainer.parentNode.insertBefore(statsDiv, listContainer.nextSibling);
+      
+      updateSelectedCount();
+    }
+
+    function updateSelectedCount() {
+      var checkboxes = document.querySelectorAll('#leadersCheckboxList .leader-checkbox:checked');
+      document.getElementById('selectedCount').textContent = checkboxes.length;
+      var printBtn = document.getElementById('printAccountabilityBtn');
+      if (checkboxes.length > 0) {
+        printBtn.innerHTML = '<i class="fas fa-print"></i> طباعة المساءلة (' + checkboxes.length + ' رئيس)';
+      } else {
+        printBtn.innerHTML = '<i class="fas fa-print"></i> طباعة المساءلة للمحددين';
+      }
+    }
+
+    function selectAllLeaders() {
+      document.querySelectorAll('#leadersCheckboxList .leader-checkbox').forEach(function(cb) { cb.checked = true; });
+      updateSelectedCount();
+    }
+
+    function deselectAllLeaders() {
+      document.querySelectorAll('#leadersCheckboxList .leader-checkbox').forEach(function(cb) { cb.checked = false; });
+      updateSelectedCount();
+    }
+
+    function printSelectedAccountabilities() {
+  var checkboxes = document.querySelectorAll('#leadersCheckboxList .leader-checkbox:checked');
+  if (checkboxes.length === 0) { showToast('⚠️ يرجى تحديد رئيس واحد على الأقل', 'error'); return; }
+  if (!selectedTopicForAccountability || !accountabilityData) { showToast('❌ بيانات غير مكتملة', 'error'); return; }
+  
+  showToast('⏳ جاري تجهيز ' + checkboxes.length + ' مساءلة...', 'loading');
+  
+  var selectedLeaders = [];
+  checkboxes.forEach(function(cb) { selectedLeaders.push(cb.value); });
+  
+  var topicNum = window._selectedTopicNumber || '';
+  var topicName = window._selectedTopicName || 'الموضوع';
+  var selectedTopic = { number: topicNum, name: topicName };
+  
+  var allFormsHTML = '';
+  selectedLeaders.forEach(function(leaderName, index) {
+    allFormsHTML += buildAccountabilityPage(leaderName, selectedTopic, index + 1, selectedLeaders.length);
+  });
+  
+  var printWindow = window.open('', '_blank', 'width=900,height=1200');
+  printWindow.document.write(`<!DOCTYPE html><html dir="rtl" lang="ar"><head><title>مساءلة إدارية رسمية</title><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet"><style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { font-family: 'Tajawal', sans-serif; direction: rtl; background: #f3f4f6; color: #1e293b; }
+    
+    .page { 
+      width: 210mm; 
+      min-height: 297mm; 
+      max-width: 800px; 
+      margin: 20px auto; 
+      background: #ffffff; 
+      border: 1px solid #cbd5e1; 
+      padding: 15mm 20mm; 
+      page-break-after: always; 
+      page-break-inside: avoid; 
+      display: flex; 
+      flex-direction: column; 
+      position: relative;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* الترويسة الرسمية */
+    .header-table { width: 100%; border-collapse: collapse; border-bottom: 2px solid #0f172a; padding-bottom: 12px; margin-bottom: 20px; }
+    .header-table td { vertical-align: middle; }
+    .header-right { text-align: right; width: 35%; font-size: 11px; line-height: 1.6; color: #0f172a; font-weight: 700; }
+    .header-center { text-align: center; width: 30%; }
+    .header-left { text-align: left; width: 35%; font-size: 11px; color: #475569; line-height: 1.6; }
+
+    /* عنوان الوثيقة */
+    .title-container { text-align: center; margin: 15px 0 20px 0; }
+    .title-container h1 { font-size: 20px; font-weight: 800; color: #991b1b; background: #fef2f2; display: inline-block; padding: 6px 30px; border: 1.5px solid #f87171; border-radius: 6px; letter-spacing: -0.5px; }
+    .title-container .subtitle { font-size: 12px; color: #64748b; margin-top: 6px; font-weight: 500; }
+
+    /* البيانات الأساسية */
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; }
+    .info-item { display: flex; align-items: center; font-size: 12px; }
+    .info-label { font-weight: 700; color: #334155; width: 90px; }
+    .info-value { color: #0f172a; font-weight: 500; background: #ffffff; border: 1px solid #cbd5e1; padding: 4px 10px; border-radius: 4px; flex: 1; }
+
+    /* نص المساءلة */
+    .body-text { font-size: 13px; line-height: 1.8; color: #334155; margin-bottom: 15px; text-align: justify; }
+
+    /* جدول الموضوع */
+    .topics-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px; }
+    .topics-table th { background: #1e293b; color: #ffffff; padding: 8px; font-weight: 700; border: 1px solid #1e293b; }
+    .topics-table td { padding: 10px 8px; border: 1px solid #cbd5e1; text-align: center; }
+    .topics-table td.topic-title { text-align: right; font-weight: 700; color: #0f172a; }
+    .status-badge { color: #dc2626; font-weight: 700; background: #fef2f2; padding: 3px 8px; border-radius: 4px; border: 1px solid #fca5a5; display: inline-block; }
+
+    /* قسم الأسباب */
+    .reasons-section { margin-bottom: 20px; }
+    .reasons-title { font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+    .reasons-box { border: 1px solid #94a3b8; border-radius: 6px; padding: 10px 15px; background: #ffffff; min-height: 110px; }
+    .reasons-box .line { border-bottom: 1px dashed #cbd5e1; height: 25px; }
+
+    /* التعهد */
+    .pledge-section { background: #f0f9ff; border-right: 4px solid #0284c7; padding: 10px 12px; border-radius: 0 6px 6px 0; font-size: 11px; color: #0369a1; line-height: 1.7; margin-bottom: 25px; }
+
+    /* التواقيع */
+    .signatures-grid { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; padding-top: 15px; }
+    .signature-card { text-align: center; font-size: 12px; }
+    .signature-title { font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .signature-name { color: #475569; font-weight: 500; margin-bottom: 25px; }
+    .signature-field { border-top: 1px dotted #64748b; padding-top: 5px; font-size: 11px; color: #64748b; margin-top: 8px; }
+
+    /* أسفل الصفحة */
+    .footer-meta { font-size: 10px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 8px; margin-top: 15px; display: flex; justify-content: space-between; }
+
+    /* إعدادات الطباعة */
+    @page { size: A4 portrait; margin: 0; }
+    @media print { 
+      html, body { background: none; } 
+      .page { border: none; box-shadow: none; margin: 0; width: 210mm; height: 297mm; padding: 15mm 20mm; } 
+      .no-print { display: none !important; } 
+    }
+    
+    .print-btn { position: fixed; bottom: 20px; left: 20px; background: #0f172a; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 9999; }
+  </style></head><body>
+  <button class="print-btn no-print" onclick="window.print()">🖨️ طباعة المستندات (${selectedLeaders.length})</button>
+  ${allFormsHTML}
+  </body></html>`);
+  
+  printWindow.document.close();
+  setTimeout(function() { printWindow.focus(); showToast('✅ تم تجهيز ' + selectedLeaders.length + ' مساءلة', 'success'); }, 500);
+}
+
+function buildAccountabilityPage(leaderName, selectedTopic, pageNum, totalPages) {
+  var topicNumber = selectedTopic.number || '-';
+  var topicName = selectedTopic.name || 'الموضوع';
+  if (!topicName || topicName === 'undefined') topicName = 'الموضوع رقم ' + topicNumber;
+  
+  return `<div class="page">
+    <table class="header-table">
+      <tr>
+        <td class="header-right">
+          المملكة العربية السعودية<br>
+          وزارة التعليم<br>
+          الإدارة العامة للتعليم بمحافظة جدة<br>
+          مدرسة ربعي بن عامر
+        </td>
+        <td class="header-center">
+          <!-- شعار وزارة التعليم رسم يدوي Vector متوافق مع كل المتصفحات -->
+          <svg width="100" height="75" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="25" r="7" fill="#008060"/>
+            <circle cx="82" cy="35" r="5.5" fill="#008060"/>
+            <circle cx="118" cy="35" r="5.5" fill="#008060"/>
+            <circle cx="68" cy="50" r="4.5" fill="#008060"/>
+            <circle cx="132" cy="50" r="4.5" fill="#008060"/>
+            <circle cx="58" cy="68" r="3.5" fill="#008060"/>
+            <circle cx="142" cy="68" r="3.5" fill="#008060"/>
+            
+            <path d="M35 90 C 70 75, 100 95, 100 95 C 100 95, 130 75, 165 90" stroke="#00A3E0" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M40 100 C 72 87, 100 105, 100 105 C 100 105, 128 87, 160 100" stroke="#008060" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M45 110 C 75 98, 100 115, 100 115 C 100 115, 125 98, 155 110" stroke="#00A3E0" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M52 120 C 78 110, 100 123, 100 123 C 100 123, 122 110, 148 120" stroke="#008060" stroke-width="3" stroke-linecap="round" fill="none"/>
+          </svg>
+        </td>
+        <td class="header-left">
+          <strong>الرقم المرجعي:</strong> ADM-${topicNumber}-${pageNum}<br>
+          <strong>التاريخ:</strong> ${new Date().toLocaleDateString('ar-SA')}<br>
+          <strong>المرفقات:</strong> لا يوجد
+        </td>
+      </tr>
+    </table>
+
+    <div class="title-container">
+      <h1>مساءلة إدارية</h1>
+      <div class="subtitle">بشأن عدم تنفيذ اجتماع المجتمعات المهنية التعلمية</div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item"><span class="info-label">المكلف:</span><span class="info-value">${leaderName}</span></div>
+      <div class="info-item"><span class="info-label">الصفة:</span><span class="info-value">رئيس قسم / مجتمعات تعلم</span></div>
+      <div class="info-item"><span class="info-label">العام الدراسي:</span><span class="info-value"> 1448 هـ</span></div>
+      <div class="info-item"><span class="info-label">الفصل الدراسي:</span><span class="info-value">الفصل الدراسي (...........)</span></div>
+    </div>
+
+    <div class="body-text">
+      المكلف المكرم، بناءً على صلاحيات إدارة المدرسة الممنوحة لنا ومتابعة خطة سير <strong>المجتمعات المهنية التعلمية</strong> المعتمدة، وحرصاً على رفع جودة نواتج التعلم وتفعيل الأساليب الإشرافية، نود إفادتكم بأنه لوحظ عدم إنجاز الاجتماع المحدد في الخطة للموضوع الموضحة تفاصيله أدناه:
+    </div>
+
+    <table class="topics-table">
+      <thead>
+        <tr>
+          <th style="width: 8%;">م</th>
+          <th style="width: 20%;">رقم الموضوع</th>
+          <th>عنوان الموضوع</th>
+          <th style="width: 22%;">حالة التنفيذ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td style="font-weight: 700;">#${topicNumber}</td>
+          <td class="topic-title">${topicName}</td>
+          <td><span class="status-badge">غير منفذ</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="reasons-section">
+      <div class="reasons-title">✍️ أسباب عدم التنفيذ (يُعبأ بمرئيات رئيس القسم):</div>
+      <div class="reasons-box">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+
+    <div class="pledge-section">
+      <strong>الإقرار والتعهد:</strong><br>
+      أقر أنا الموضح اسمي أعلاه باطلاعي على المساءلة، وأتعهد بالتزام خطة المجتمعات المهنية التعلمية مستقبلاً وتنفيذ المحاضرات والاجتماعات في مواعيدها المحددة وتزويد الإدارة بالإثباتات اللازمة.
+    </div>
+
+    <div class="signatures-grid">
+      <div class="signature-card">
+        <div class="signature-title">المستلم / رئيس القسم</div>
+        <div class="signature-name">${leaderName}</div>
+        <div class="signature-field">التوقيع: </div>
+        <div class="signature-field">التاريخ: &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / 1448 هـ</div>
+      </div>
+      
+      <div class="signature-card">
+        <div class="signature-title">وكيل الشؤون التعليمية</div>
+        <div class="signature-name">محمد علي الكردي</div>
+        <div class="signature-field">التوقيع: </div>
+        <div class="signature-field">التاريخ: &nbsp;&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;&nbsp; / 1448 هـ</div>
+      </div>
+    </div>
+
+    <div class="footer-meta">
+      <span>تاريخ الإصدار والطباعة: ${new Date().toLocaleDateString('ar-SA')}</span>
+      
+    </div>
+  </div>`;
+}
+
+// ====== Initialize ======
+window.onload = function() {
+  window.onclick = function(event) {
+    var topicModal = document.getElementById('topicModal');
+    var leaderModal = document.getElementById('leaderModal');
+    var trackerModal = document.getElementById('trackerModal');
+    var accountabilityModal = document.getElementById('accountabilityModal');
+    
+    if (event.target === topicModal) closeTopicModal();
+    if (event.target === leaderModal) closeLeaderModal();
+    if (event.target === trackerModal) closeTrackerModal();
+    if (event.target === accountabilityModal) closeAccountabilityModal();
+  };
+  
+  setTimeout(function() { checkAttendeesStatus(); }, 1000);
+  initCharCounters();
+};
+  </script>
+</body>
+</html>
