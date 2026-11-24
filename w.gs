@@ -12,6 +12,7 @@ function doGet() {
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
+
 function getData() {
   try {
     var result = getSheetData();
