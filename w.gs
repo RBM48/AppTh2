@@ -586,7 +586,7 @@ function generateAIContent(topic, specialty) {
       specialty = 'التربية';
     }
     
-    var apiKey = 'AIzaSyAaPVAT0i_n0QN2HMkusNkbH3Pw897A4co';
+    var apiKey = '';
     
     // ====== بناء Prompt مع تحديد عدد الأحرف ======
     var prompt = `أنت خبير تربوي متخصص في تدريس "${specialty}". 
@@ -751,7 +751,7 @@ function getFallbackContentWithLimit(topic, specialty) {
 // ====== اختبار الاتصال بـ Gemini API ======
 function testGeminiAPI() {
   try {
-    var apiKey = 'AIzaSyAaPVAT0i_n0QN2HMkusNkbH3Pw897A4co';
+    var apiKey = '';
     var url = 'https://generativelanguage.googleapis.com/v1beta/models?key=' + apiKey;
     
     var options = {
